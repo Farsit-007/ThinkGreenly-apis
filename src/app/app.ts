@@ -3,8 +3,8 @@ import cors from 'cors';
 import express, { Application, NextFunction, Request, Response } from 'express';
 // import router from '../src/app/routes';
 import os from 'os';
+import handleErrors from './utils/handleErrors';
 // import sendResponse from './utilities/sendResponse';
-// import { handleErrors } from './utilities/handleErrors';
 
 const app: Application = express();
 
@@ -47,12 +47,13 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-// app.use('/api', router);
-
 app.use((req: Request, res: Response, next: NextFunction) => {
-    //   sendResponse(res, false, 'API not found');
-    res.status(404).send({message: "API not found"})
+  //   sendResponse(res, false, 'API not found');
+  res.status(404).send({ message: 'API not found' });
 });
 
-// app.use(handleErrors);
+// app.use('/api', router);
+
+app.use(handleErrors);
+
 export default app;
