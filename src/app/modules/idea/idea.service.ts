@@ -5,22 +5,20 @@ import prisma from '../../config/prisma';
 import { TIdeaFilterParams, TIdeaPayload } from './idea.types';
 import { ideaFilters } from './idea.utilities';
 
-/**
- *
- * @param payload data for create or update
- */
-
 export class IdeaServices {
-  // service function for creating idea
-  static async createIdea(payload: TIdeaPayload) {
+  // createIdeaIntoDB
+  static async createIdeaIntoDB(payload: TIdeaPayload) {
     const result = await prisma.idea.create({
       data: payload,
     });
     return result;
   }
 
-  // service function for getting all ideas
-  static getAllIdeas = async (params?: TIdeaFilterParams, options?: any) => {
+  // getAllIdeasFromDB
+  static getAllIdeasFromDB = async (
+    params?: TIdeaFilterParams,
+    options?: any
+  ) => {
     const { limit, page, skip } = options;
     const filterOptions = ideaFilters(params);
     const result = await prisma.idea.findMany({
@@ -39,19 +37,21 @@ export class IdeaServices {
         purchases: true,
       },
     });
-    const totalCount = await prisma.idea.count({ where: filterOptions });
+    const count = await prisma.idea.count({ where: filterOptions });
+
     return {
       meta: {
         page: page || 1,
         limit: limit || 10,
-        total: totalCount,
+        total: count,
+        totalPage: Math.ceil(count / limit),
       },
       data: result,
     };
   };
 
-  // service function for getting a idea by id
-  static getSingleIdea = async (id: string): Promise<Idea | null> => {
+  // getSingleIdeaFromDB
+  static getSingleIdeaFromDB = async (id: string): Promise<Idea | null> => {
     const result = await prisma.idea.findUnique({
       where: { id },
     });
@@ -59,8 +59,8 @@ export class IdeaServices {
     return result;
   };
 
-  // service function for updating a idea by id
-  static updateIdea = async (
+  // updateIdeaFromDB
+  static updateIdeaFromDB = async (
     id: string,
     payload: Partial<Idea>
   ): Promise<Idea | null> => {
@@ -71,8 +71,8 @@ export class IdeaServices {
     return result;
   };
 
-  // service function for deleting a idea by id
-  static deleteAIdea = async (id: string) => {
+  // deleteAnIdeaFromDB
+  static deleteAnIdeaFromDB = async (id: string) => {
     const result = await prisma.idea.delete({
       where: { id },
     });

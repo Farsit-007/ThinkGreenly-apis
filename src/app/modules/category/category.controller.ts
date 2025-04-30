@@ -3,6 +3,7 @@ import { httpStatus } from '../../utils/httpStatus';
 import sendResponse from '../../utils/sendResponse';
 import { CategoryService } from './category.service';
 
+// createCategory
 const createCategory = catchAsync(async (req, res) => {
   const result = await CategoryService.createCategoryIntoDB(req.body);
 
@@ -13,6 +14,7 @@ const createCategory = catchAsync(async (req, res) => {
   });
 });
 
+// getAllCategories
 const getAllCategories = catchAsync(async (req, res) => {
   const result = await CategoryService.getAllCategoriesFromDB(req.query);
 
