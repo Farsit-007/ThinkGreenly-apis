@@ -3,10 +3,7 @@ import express from 'express';
 const router = express.Router();
 
 const moduleRoutes = [
-    {
-        path: "/customers",
-        route: CustomerRoutes,
-    }
+
 ];
 
 // moduleRoutes.forEach((route) => router.use(route.path, route.route));
