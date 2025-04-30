@@ -19,6 +19,11 @@ IdeaRoutes.get('/:id', IdeaControllers.getSingleIdea);
 IdeaRoutes.put(
   '/:id',
   uploadFile.array('images', 10),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+
+    next();
+  },
   IdeaControllers.updateAIdea
 );
 IdeaRoutes.delete('/:id', IdeaControllers.deleteAIdea);
