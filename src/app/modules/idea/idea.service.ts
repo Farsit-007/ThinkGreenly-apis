@@ -76,6 +76,9 @@ export class IdeaServices {
     id: string,
     payload: Partial<Idea>
   ): Promise<Idea | null> => {
+
+    const floatPrice = Number(payload.price);
+    payload.price = floatPrice;
     const result = await prisma.idea.update({
       where: { id,isDeleted:false },
       data: payload,
