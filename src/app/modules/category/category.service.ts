@@ -4,16 +4,18 @@ import { PaginationHelper } from '../../builder/paginationHelper';
 import { ConditionsBuilder } from '../../builder/conditionsBuilder';
 import { CategoryFields } from './category.constants';
 
+// createCategoryIntoDB
 const createCategoryIntoDB = async (payload: Partial<Category>) => {
   const result = await prisma.category.create({
     data: {
-      name: payload.name!!,
+      name: payload.name!,
     },
   });
 
   return result;
 };
 
+// getAllCategoriesFromDB
 const getAllCategoriesFromDB = async (query: Record<string, unknown>) => {
   const { page, limit, skip, sortBy, sortOrder } =
     PaginationHelper.calculatePagination(query);
@@ -55,7 +57,7 @@ const getAllCategoriesFromDB = async (query: Record<string, unknown>) => {
     meta: {
       page,
       limit,
-      total: Number(count),
+      total: count,
       totalPage: Math.ceil(count / limit),
     },
     data: result,
