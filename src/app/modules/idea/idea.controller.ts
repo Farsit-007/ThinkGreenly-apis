@@ -92,11 +92,11 @@ export class IdeaControllers {
 
   // deleteAIdea
   static deleteAIdea = catchAsync(async (req, res) => {
-    const result = await IdeaServices.deleteAnIdeaFromDB(req.params.id);
+    await IdeaServices.deleteAnIdeaFromDB(req.params.id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       message: 'Idea deleted successfully',
-      data: result,
+      data: null,
     });
   });
 }
