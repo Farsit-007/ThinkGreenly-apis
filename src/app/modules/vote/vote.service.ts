@@ -6,7 +6,7 @@ import NotFound from "../../errors/NotFound";
 import PermissionDenied from "../../errors/PermissionDenied";
 import NotAcceptable from "../../errors/NotAcceptable";
 
-// Service for handling vote-related operations
+
 const voteService = {
   createOrUpdateVote: async (userId: string, payload: IVotePayload): Promise<IVoteResponse> => {
     const { ideaId, type } = payload;
@@ -64,7 +64,8 @@ const voteService = {
         });
         return updatedVote;
       }
-      return existingVote; // Return existing vote if type is the same
+      return existingVote; 
+      
     }
 
     // Create new vote
@@ -79,11 +80,7 @@ const voteService = {
     return newVote;
   },
 
-  /**
-   * Remove a user's vote from an idea
-   * @param userId - ID of the user removing the vote
-   * @param ideaId - ID of the idea to remove vote from
-   */
+
   removeVote: async (userId: string, ideaId: string): Promise<void> => {
     // Check if idea exists
     const idea = await prisma.idea.findUnique({
@@ -149,16 +146,11 @@ const voteService = {
     return {
       upvotes: upvotesCount,
       downvotes: downvotesCount,
-      total: upvotesCount - downvotesCount, // Net vote count
+      total: upvotesCount - downvotesCount, 
     };
   },
 
-  /**
-   * Check if a user has voted on an idea
-   * @param userId - ID of the user
-   * @param ideaId - ID of the idea
-   * @returns Vote object if exists, null otherwise
-   */
+
   getUserVote: async (userId: string, ideaId: string): Promise<IVoteResponse | null> => {
     const vote = await prisma.vote.findUnique({
       where: {
