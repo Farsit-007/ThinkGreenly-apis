@@ -11,6 +11,7 @@ export class IdeaControllers {
   static createIdea = catchAsync(async (req, res) => {
     const payload = req.body;
     payload.images = [];
+    
     if (req.files && req.files instanceof Array) {
       const imageUrls = await Promise.all(
         req.files.map(async (file) => {
@@ -23,6 +24,7 @@ export class IdeaControllers {
       );
       payload.images = imageUrls;
     }
+    
     const result = await IdeaServices.createIdeaIntoDB(payload);
     sendResponse(res, {
       statusCode: httpStatus.OK,
