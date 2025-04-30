@@ -50,7 +50,6 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-
 // all routes
 app.use('/api/v1', router);
 

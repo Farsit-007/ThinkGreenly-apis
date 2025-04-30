@@ -6,27 +6,22 @@ import { CategoryService } from './category.service';
 const createCategory = catchAsync(async (req, res) => {
   const result = await CategoryService.createCategoryIntoDB(req.body);
 
-  sendResponse(
-    res,
-    httpStatus.OK,
-    true,
-    'Category is created successfully',
-    undefined,
-    result
-  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Category is created successfully',
+    data: result,
+  });
 });
 
 const getAllCategories = catchAsync(async (req, res) => {
   const result = await CategoryService.getAllCategoriesFromDB(req.query);
 
-  sendResponse(
-    res,
-    httpStatus.OK,
-    true,
-    'Category list retrieved successfully',
-    result.meta,
-    result.data
-  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Category list retrieved successfully',
+    meta: result.meta,
+    data: result.data,
+  });
 });
 
 export const CategoryController = {
