@@ -8,7 +8,7 @@ import handleZodError from '../errors/handleZodError';
 import handleDuplicateError from '../errors/handleDuplicateError';
 import { TErrorSources } from '../types';
 
-const handleErrors = (
+const globalErrorHandler = (
   err: any,
   req: Request,
   res: Response,
@@ -63,4 +63,4 @@ const handleErrors = (
   });
 };
 
-export default handleErrors;
+export default globalErrorHandler;

@@ -5,7 +5,7 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 import os from 'os';
 import router from './app/routes';
 import notFound from './app/utils/notFound';
-import handleErrors from './app/utils/handleErrors';
+import globalErrorHandler from './app/utils/globalErrorHandler';
 
 // import sendResponse from './utilities/sendResponse';
 
@@ -59,7 +59,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/v1', router);
 
 // global error handler
-app.use(handleErrors);
+app.use(globalErrorHandler);
 
 // not found route handler
 app.use(notFound);
