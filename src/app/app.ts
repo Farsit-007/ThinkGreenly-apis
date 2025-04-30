@@ -52,7 +52,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).send({ message: 'API not found' });
 });
 
-// app.use('/api', router);
+// app.use('/api/v1', router);
 
 app.use(handleErrors);
 
