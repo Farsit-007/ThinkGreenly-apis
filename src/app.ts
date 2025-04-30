@@ -50,10 +50,6 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  //   sendResponse(res, false, 'API not found');
-  res.status(404).send({ message: 'API not found' });
-});
 
 // all routes
 app.use('/api/v1', router);
