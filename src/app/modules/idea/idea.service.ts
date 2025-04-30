@@ -1,15 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Idea } from '@prisma/client';
+import { Idea, IdeaStatus } from '@prisma/client';
 import prisma from '../../config/prisma';
 import { TIdeaFilterParams, TIdeaPayload } from './idea.types';
 import { ideaFilters } from './idea.utilities';
 
 export class IdeaServices {
   // createIdeaIntoDB
-  static async createIdeaIntoDB(payload: TIdeaPayload) {
+  static async createIdeaIntoDB(payload: TIdeaPayload) {    
     const result = await prisma.idea.create({
-      data: payload,
+      data: {
+      title: payload.title,
+      problemStatement: payload.problemStatement,
+      solution: payload.solution,
+      description: payload.description, 
+      price: Number(payload.price),
+      isPaid: payload.isPaid,
+      status: payload.status as IdeaStatus,
+      feedback: payload.feedback,
+      categoryId: payload.categoryId,
+      authorId: payload.authorId,
+      images: payload.images,
+    },
     });
     return result;
   }
@@ -53,7 +65,7 @@ export class IdeaServices {
   // getSingleIdeaFromDB
   static getSingleIdeaFromDB = async (id: string): Promise<Idea | null> => {
     const result = await prisma.idea.findUnique({
-      where: { id },
+      where: { id,isDeleted:false },
     });
 
     return result;
@@ -65,7 +77,7 @@ export class IdeaServices {
     payload: Partial<Idea>
   ): Promise<Idea | null> => {
     const result = await prisma.idea.update({
-      where: { id },
+      where: { id,isDeleted:false },
       data: payload,
     });
     return result;
@@ -73,8 +85,9 @@ export class IdeaServices {
 
   // deleteAnIdeaFromDB
   static deleteAnIdeaFromDB = async (id: string) => {
-    const result = await prisma.idea.delete({
-      where: { id },
+    const result = await prisma.idea.update({
+      where: { id,isDeleted:false },
+      data: {isDeleted:true}
     });
     return result;
   };

@@ -1,11 +1,13 @@
 import multer from 'multer';
 import { v2 as cloudinary, type UploadApiResponse } from 'cloudinary';
+import dotenv from 'dotenv';
 /**
  *
  * @param storage storage for holding file using multer
  * @param uploadFile uploader function for image files to storage
  * @param sendImageToCloudinary uploader function for images files to cloudinary
  **/
+dotenv.config();
 
 // Configure Cloudinary
 cloudinary.config({

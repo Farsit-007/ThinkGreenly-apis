@@ -43,7 +43,7 @@ export const ideaFilters = (
     }
   }
 
-  //   andConditions.push({ isDeleted: false });
+    andConditions.push({ isDeleted: false });
   if (andConditions.length) {
     where.AND = andConditions;
   }
