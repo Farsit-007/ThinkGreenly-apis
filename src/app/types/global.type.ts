@@ -4,5 +4,4 @@ export type TModelFieldsType = {
   filterableStringFields: string[];
   filterableNumberFields: string[];
   filterableBooleanFields: string[];
-  filterableDateFields: string[];
 };

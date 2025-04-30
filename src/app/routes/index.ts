@@ -1,11 +1,20 @@
-import express from 'express';
+import { Router } from 'express';
+import IdeaRoutes from '../modules/idea/idea.route';
+import CategoryRoutes from '../modules/category/category.route';
 
-const router = express.Router();
+const router = Router();
 
-// const moduleRoutes = [
+const moduleRoutes = [
+  {
+    path: '/ideas',
+    route: IdeaRoutes,
+  },
+  {
+    path: '/categories',
+    route: CategoryRoutes,
+  },
+];
 
-// ];
-
-// moduleRoutes.forEach((route) => router.use(route.path, route.route));d
+moduleRoutes.forEach((route) => router.use(route.path, route.route));
 
 export default router;
