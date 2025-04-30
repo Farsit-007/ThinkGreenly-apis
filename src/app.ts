@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import cors from 'cors';
 import express, { Application, NextFunction, Request, Response } from 'express';
-// import router from '../src/app/routes';
 import os from 'os';
 import router from './app/routes';
 import notFound from './app/utils/notFound';
 import globalErrorHandler from './app/utils/globalErrorHandler';
-
-// import sendResponse from './utilities/sendResponse';
 
 const app: Application = express();
 
