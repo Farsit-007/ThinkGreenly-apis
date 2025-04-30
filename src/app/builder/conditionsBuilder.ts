@@ -4,7 +4,7 @@ import { TModelFieldsType } from '../types';
 
 const buildConditionsForPrisma = (
   query: Record<string, unknown>,
-  andConditions: any,
+  andConditions: Array<Record<string, unknown>>,
   fields: TModelFieldsType
 ) => {
   const filterFields = pick(query, [
@@ -50,7 +50,7 @@ const buildConditionsForPrisma = (
     andConditions.push({
       AND: Object.keys(filterData).map((key) => ({
         [key]: {
-          equals: (filterData as any)[key],
+          equals: filterData[key] as string | number | boolean,
         },
       })),
     });
@@ -64,7 +64,8 @@ const buildConditionsForPrisma = (
     const dateConditions = [];
 
     for (const [field, value] of Object.entries(dateFields)) {
-      const prismaConditions: Record<string, any> = {};
+      const prismaConditions: Record<string, { gte?: number; lte?: number }> =
+        {};
 
       if (typeof value === 'string' && value.includes(',')) {
         const [start, end] = value.split(',').map(Number);

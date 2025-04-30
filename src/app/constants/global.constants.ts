@@ -1,7 +1,7 @@
 export const globalPaginationOptions: string[] = [
+  'page',
   'limit',
-  'offset',
-  'sort',
+  'sortBy',
   'sortOrder',
 ];
 export const globalQueryOptions: string[] = ['searchTerm'];
