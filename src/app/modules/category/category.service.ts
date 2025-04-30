@@ -56,6 +56,7 @@ const getAllCategoriesFromDB = async (query: Record<string, unknown>) => {
       page,
       limit,
       total: Number(count),
+      totalPage: Math.ceil(count / limit),
     },
     data: result,
   };
