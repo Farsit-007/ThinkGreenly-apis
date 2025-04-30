@@ -2,16 +2,17 @@ import { globalPaginationOptions } from '../constants/global.constants';
 import pick from '../utils/pick';
 
 type TPaginationOptions = {
+  page?: number;
   limit?: number;
-  offset?: number;
-  sort?: string | undefined;
+  sortBy?: string | undefined;
   sortOrder?: string | undefined;
 };
 
 type IOptionsResult = {
+  page: number;
   limit: number;
-  offset: number;
-  sort: string;
+  skip: number;
+  sortBy: string;
   sortOrder: string;
 };
 
@@ -20,14 +21,12 @@ const calculatePagination = (
 ): IOptionsResult => {
   const options: TPaginationOptions = pick(query, globalPaginationOptions);
 
+  const page: number = Number(options.page) || 1;
   const limit: number = Number(options?.limit) || 10;
 
-  let offset: number = 0;
-  if (options?.offset) {
-    offset = Number(options.offset);
-  }
+  const skip = (Number(page) - 1) * Number(limit);
 
-  const sort: string = options?.sort || 'id';
+  const sortBy: string = options?.sortBy || 'id';
 
   let sortOrder: string = 'desc';
   if (options?.sortOrder === 'asc' || options?.sortOrder === 'desc') {
@@ -35,9 +34,10 @@ const calculatePagination = (
   }
 
   return {
+    page,
     limit,
-    offset,
-    sort,
+    skip,
+    sortBy,
     sortOrder,
   };
 };
