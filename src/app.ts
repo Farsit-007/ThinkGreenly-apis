@@ -50,6 +50,7 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
+<<<<<<< HEAD
 app.use((req: Request, res: Response, next: NextFunction) => {
   //   sendResponse(res, false, 'API not found');
   res.status(404).send({ message: 'API not found' });
@@ -61,6 +62,14 @@ app.use('/api/v1', router);
 // global error handler
 app.use(globalErrorHandler);
 
+=======
+// all routes
+app.use('/api/v1', router);
+
+// global error handler
+app.use(globalErrorHandler);
+
+>>>>>>> cbd32b90369ab02148bddf06657eed778f8cf814
 // not found route handler
 app.use(notFound);
 

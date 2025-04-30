@@ -1,37 +1,27 @@
-import type { Response } from 'express';
+import { Response } from 'express';
 
-/**
- *
- * @param res Response from Express.js from the Specific Controller
- * @param statusCode HTTP Status Code
- * @param success Success Response as boolean (`true` or `false`)
- * @param message Custom Message Message
- * @param meta Optional meta data for pagination
- * @param data Optional Data to send
- */
-const sendResponse = <T>(
-  res: Response,
-  statusCode: number,
-  success: boolean,
-  message: string,
-  meta?: { page: number; limit: number; total: number },
-  data?: T
-): void => {
-  if (data) {
-    res.status(statusCode).json({
-      success,
-      message,
-      statusCode,
-      meta,
-      data,
-    });
-  } else {
-    res.status(statusCode).json({
-      success,
-      message,
-      statusCode,
-    });
-  }
+type TMeta = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPage: number;
+};
+
+type TResponse<T> = {
+  statusCode: number;
+  message: string;
+  meta?: TMeta;
+  data: T;
+};
+
+const sendResponse = <T>(res: Response, data: TResponse<T>) => {
+  res.status(data.statusCode).json({
+    statusCode: data.statusCode,
+    success: true,
+    message: data.message,
+    meta: data?.meta,
+    data: data.data,
+  });
 };
 
 export default sendResponse;
