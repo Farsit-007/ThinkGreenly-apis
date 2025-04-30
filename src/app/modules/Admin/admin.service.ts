@@ -63,11 +63,22 @@ const getAllIdeas = async (query: Record<string, unknown>) => {
     data: result,
   };
 };
-
+const updateIdeaStatus = async (id: string, status: IdeaStatus) => {
+  const result = await prisma.idea.update({
+    where: {
+      id,
+    },
+    data: {
+      status,
+    },
+  });
+  return result;
+}
 
 
   export const AdminService = {
-    getAllIdeas
+    getAllIdeas,
+    updateIdeaStatus
   }
 
 
