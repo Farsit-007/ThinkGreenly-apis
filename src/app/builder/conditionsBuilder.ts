@@ -4,7 +4,7 @@ import { TModelFieldsType } from '../types';
 
 const buildConditionsForPrisma = (
   query: Record<string, unknown>,
-  andConditions: any,
+  andConditions: Array<Record<string, unknown>>,
   fields: TModelFieldsType
 ) => {
   const filterFields = pick(query, [
@@ -50,15 +50,101 @@ const buildConditionsForPrisma = (
     andConditions.push({
       AND: Object.keys(filterData).map((key) => ({
         [key]: {
-          equals: (filterData as any)[key],
+          equals: filterData[key] as string | number | boolean,
         },
       })),
     });
   }
 
+  /* Date Filter */
+  const dateFields: Record<string, unknown> = pick(query, [
+    ...(fields.filterableDateFields as []),
+  ]);
+  if (Object.keys(dateFields).length > 0) {
+    const dateConditions = [];
+
+    for (const [field, value] of Object.entries(dateFields)) {
+      const prismaConditions: Record<string, { gte?: number; lte?: number }> =
+        {};
+
+      if (typeof value === 'string' && value.includes(',')) {
+        const [start, end] = value.split(',').map(Number);
+        if (!isNaN(start) && !isNaN(end) && start !== 0 && end !== 0) {
+          prismaConditions[field] = {
+            gte: start,
+            lte: end,
+          };
+          dateConditions.push(prismaConditions);
+        }
+      }
+    }
+
+    if (dateConditions.length > 0)
+      andConditions.push({
+        AND: dateConditions,
+      });
+  }
+
   return andConditions;
+};
+
+const buildConditionsForRawSQL = (
+  query: Record<string, unknown>,
+  fields: TModelFieldsType,
+  whereConditions: string[] = ['WHERE 1=1 ']
+) => {
+  const filterFields: Record<string, unknown> = pick(query, [
+    ...globalQueryOptions,
+    ...(fields.filterableStringFields as []),
+    ...(fields.filterableNumberFields as []),
+    ...(fields.filterableBooleanFields as []),
+  ]);
+  const { search, searchTerm, ...filterData } = filterFields;
+
+  /* Search */
+  if (searchTerm && (fields.searchable as [])) {
+    const searchConditions = (fields.searchable as [])
+      .map((field) => `${fields.tableName}.${field} ILIKE '%${searchTerm}%'`)
+      .join(' OR ');
+
+    whereConditions.push(searchConditions ? ` AND (${searchConditions})` : '');
+  }
+
+  /* Filter */
+  if (Object.keys(filterData).length > 0) {
+    const filterString = Object.entries(filterData)
+      .map(([key, value]) => `AND ${fields.tableName}.${key} = '${value}'`)
+      .join(' ');
+    whereConditions.push(filterString ? filterString : '');
+  }
+
+  /* Date Filter */
+  const dateFields: Record<string, unknown> = pick(query, [
+    ...(fields.filterableDateFields as []),
+  ]);
+  if (Object.keys(dateFields).length > 0) {
+    const sqlParts: string[] = [];
+
+    for (const [field, value] of Object.entries(dateFields)) {
+      if (typeof value === 'string' && value.includes(',')) {
+        const [start, end] = value.split(',').map(Number);
+        if (!isNaN(start) && !isNaN(end) && start !== 0 && end !== 0) {
+          sqlParts.push(
+            `(${fields.tableName}.${field} BETWEEN ${start} AND ${end})`
+          );
+        }
+      }
+    }
+
+    whereConditions.push(
+      sqlParts.length > 0 ? ` AND ${sqlParts.join(' AND ')}` : ''
+    );
+  }
+
+  return whereConditions.join(' ');
 };
 
 export const ConditionsBuilder = {
   prisma: buildConditionsForPrisma,
+  rawSQL: buildConditionsForRawSQL,
 };
