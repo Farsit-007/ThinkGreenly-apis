@@ -1,21 +1,17 @@
 import express from 'express';
-<<<<<<< HEAD
 import IdeaRoutes from '../modules/idea/idea.route';
-=======
-import { CategoryRoutes } from '../modules/category/category.route';
->>>>>>> cbd32b90369ab02148bddf06657eed778f8cf814
+import CategoryRoutes from '../modules/category/category.route';
 
 const router = express.Router();
 
 const moduleRoutes = [
   {
-<<<<<<< HEAD
     path: '/ideas',
     route: IdeaRoutes,
-=======
+  },
+  {
     path: '/categories',
     route: CategoryRoutes,
->>>>>>> cbd32b90369ab02148bddf06657eed778f8cf814
   },
 ];
 
