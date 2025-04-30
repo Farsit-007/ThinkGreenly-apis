@@ -1,7 +1,79 @@
-const createUserIntoDB = async (payload : any) => {
-    console.log(payload);
+import prisma from '../../config/prisma';
+import bcrypt from 'bcrypt';
+import { IUser } from './user.interface';
+import { Role } from '@prisma/client';
+import { JwtPayload } from 'jsonwebtoken';
+const createUserIntoDB = async (payload: IUser) => {
+  const hashPassword: string = await bcrypt.hash(payload.password, 12);
+  const userData = {
+    ...payload,
+    role: Role.MEMBER,
+    password: hashPassword,
+  };
+  const result = await prisma.user.create({
+    data: userData,
+  });
+  return result;
+};
+
+const changeUserStatus = async (
+  userId: string,
+  payload: { isActive: boolean; role: Role }
+) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+    },
+  });
+  const result = await prisma.user.update({
+    where: {
+      id: userData.id,
+    },
+    data: payload,
+  });
+  return result;
+};
+
+const getMyProfile = async (user: JwtPayload) => {
+  const userData = await prisma.user.findFirstOrThrow({
+    where: {
+      email: user?.email,
+      isActive: true,
+    },
+  });
+  let profileInfo;
+  if (userData.role === Role.ADMIN) {
+    profileInfo = await prisma.user.findUnique({
+      where: {
+        email: userData.email,
+        role : Role.ADMIN
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        isActive: true,
+      },
+    });
+  } else if (userData.role === Role.MEMBER) {
+    profileInfo = await prisma.user.findUnique({
+      where: {
+        email: userData.email,
+        role : Role.MEMBER
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        isActive: true,
+      },
+    });
+  }
+  return profileInfo;
 };
 
 export const userServices = {
   createUserIntoDB,
+  changeUserStatus,
+  getMyProfile,
 };
