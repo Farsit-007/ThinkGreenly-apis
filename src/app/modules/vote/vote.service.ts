@@ -1,11 +1,8 @@
-
 import { VoteType } from "@prisma/client";
 import prisma from "../../config/prisma";
 import { IVotePayload, IVoteResponse, IVoteStats } from "./vote.interface";
 import NotFound from "../../errors/NotFound";
-// import PermissionDenied from "../../errors/PermissionDenied";
 import NotAcceptable from "../../errors/NotAcceptable";
-
 
 
 const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promise<IVoteResponse> => {
@@ -23,24 +20,6 @@ const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promis
   if (idea.status !== "APPROVED") {
     throw new NotAcceptable("Cannot vote on ideas that are not approved");
   }
-
-  // Check if the idea is paid and if the user has purchased it
-  // if (idea.isPaid) {
-  //   const hasPurchased = await prisma.purchase.findUnique({
-  //     where: {
-  //       userId_ideaId: {
-  //         userId,
-  //         ideaId,
-  //       },
-  //     },
-  //   });
-
-  //   if (!hasPurchased) {
-  //     throw new PermissionDenied("You must purchase this idea before voting");
-  //   }
-  // }
-
-  // Check if user already voted on this idea
   const existingVote = await prisma.vote.findUnique({
     where: {
       userId_ideaId: {
@@ -49,7 +28,6 @@ const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promis
       },
     },
   });
-
   if (existingVote) {
     // Update existing vote if type is different
     if (existingVote.type !== type) {
@@ -65,9 +43,7 @@ const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promis
       return updatedVote;
     }
     return existingVote;
-
   }
-
   // Create new vote
   const newVote = await prisma.vote.create({
     data: {
@@ -76,7 +52,6 @@ const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promis
       type,
     },
   });
-
   return newVote;
 };
 
@@ -86,11 +61,9 @@ const removeVote = async (userId: string, ideaId: string): Promise<void> => {
   const idea = await prisma.idea.findUnique({
     where: { id: ideaId },
   });
-
   if (!idea) {
     throw new NotFound("Idea not found");
   }
-
   // Check if vote exists
   const vote = await prisma.vote.findUnique({
     where: {
@@ -104,7 +77,6 @@ const removeVote = async (userId: string, ideaId: string): Promise<void> => {
   if (!vote) {
     throw new NotFound("Vote not found");
   }
-
   // Delete the vote
   await prisma.vote.delete({
     where: {
@@ -114,7 +86,6 @@ const removeVote = async (userId: string, ideaId: string): Promise<void> => {
       },
     },
   });
-
 };
 
 
@@ -123,11 +94,9 @@ const getVoteStats = async (ideaId: string): Promise<IVoteStats> => {
   const idea = await prisma.idea.findUnique({
     where: { id: ideaId },
   });
-
   if (!idea) {
     throw new NotFound("Idea not found");
   }
-
   // Count upvotes and downvotes
   const [upvotesCount, downvotesCount] = await Promise.all([
     prisma.vote.count({
@@ -143,7 +112,6 @@ const getVoteStats = async (ideaId: string): Promise<IVoteStats> => {
       },
     }),
   ]);
-
   return {
     upvotes: upvotesCount,
     downvotes: downvotesCount,
@@ -167,7 +135,7 @@ const getUserVote = async (userId: string, ideaId: string): Promise<IVoteRespons
   return vote;
 };
 
-// export default voteService;
+
 export const voteService = {
   createOrUpdateVote,
   removeVote,

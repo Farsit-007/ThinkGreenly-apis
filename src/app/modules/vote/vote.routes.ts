@@ -19,7 +19,6 @@ router.post(
 
 router.delete(
   "/:ideaId",
-  // "/",
   auth("MEMBER"),
   validateRequest(deleteVoteValidationSchema),
   voteController.removeVote
@@ -27,14 +26,12 @@ router.delete(
 
 router.get(
   "/stats/:ideaId",
-  // "/stats",
   validateRequest(getVoteStatsValidationSchema),
   voteController.getVoteStats
 );
 
 router.get(
   "/:ideaId",
-  // "/",
   auth("MEMBER"),
   validateRequest(getVoteStatsValidationSchema),
   voteController.getUserVote
