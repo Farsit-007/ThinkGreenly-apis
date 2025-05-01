@@ -1,4 +1,4 @@
-import { IdeaStatus, Prisma } from '@prisma/client';
+import { Idea, IdeaStatus, Prisma } from '@prisma/client';
 import { PaginationHelper } from '../../builder/paginationHelper';
 import prisma from '../../config/prisma';
 import { ConditionsBuilder } from '../../builder/conditionsBuilder';
@@ -143,14 +143,14 @@ const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
 };
 
 // updateIdeaStatusIntoDB
-const updateIdeaStatusIntoDB = async (id: string, status: IdeaStatus) => {
+const updateIdeaStatusIntoDB = async (id: string, status:Partial<Idea>) => {
   const result = await prisma.idea.update({
     where: {
       id,
+      isDeleted:false
     },
-    data: {
-      status,
-    },
+    data: {...status },
+    
   });
   return result;
 };
