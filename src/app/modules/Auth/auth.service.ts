@@ -138,68 +138,83 @@ const forgetPassword = async (payload: { email: string }) => {
     config.password.reset_password_link +
     `?id=${userData.id}&token=${resetPasswordToken}`;
   const html = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body { font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
-          .header { background-color: #2a5c99; color: white; padding: 20px; text-align: center; }
-          .content { padding: 20px; }
-          .reset-button {
-            display: inline-block;
-            background-color: #2a5c99;
-            color: white !important;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
-            margin: 15px 0;
-          }
-          .footer {
-            background-color: #f4f4f4;
-            padding: 15px;
-            text-align: center;
-            font-size: 12px;
-          }
-          .warning { color: #d9534f; font-weight: bold; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>🔒 Password Reset Request</h1>
-        </div>
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .header {
+        background-color: #2e7d32; /* Changed to green */
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+      .content {
+        padding: 20px;
+      }
+      .reset-button {
+        display: inline-block;
+        background-color: #2e7d32; /* Changed to green */
+        color: white !important;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        margin: 15px 0;
+      }
+      .footer {
+        background-color: #f4f4f4;
+        padding: 15px;
+        text-align: center;
+        font-size: 12px;
+      }
+      .warning {
+        color: #d9534f;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🌳🌴🌲 Password Reset Request</h1>
+    </div>
 
-        <div class="content">
+    <div class="content">
 
-          <p>We received a request to reset your ThinkGreenly account password.</p>
+      <p>We received a request to reset your ThinkGreenly account password.</p>
 
-          <center>
-            <a href="${resetPasswordLink}" class="reset-button">
-              Reset Password
-            </a>
-          </center>
+      <center>
+        <a href="${resetPasswordLink}" class="reset-button">
+          Reset Password
+        </a>
+      </center>
 
-          <p class="warning">⚠️ This link will expire in <strong>10 minutes</strong>.</p>
+      <p class="warning">⚠️ This link will expire in <strong>10 minutes</strong>.</p>
 
-          <p>If you didn't request this password reset, please:</p>
-          <ol>
-            <li>Ignore this email</li>
-            <li>Secure your account</li>
-            <li>Contact our support team if you notice suspicious activity</li>
-          </ol>
-        </div>
+      <p>If you didn't request this password reset, please:</p>
+      <ol>
+        <li>Ignore this email</li>
+        <li>Secure your account</li>
+        <li>Contact our support team if you notice suspicious activity</li>
+      </ol>
+    </div>
 
-        <div class="footer">
-          <p>© ${new Date().getFullYear()} Think Greenly. All rights reserved.</p>
-          <p>For security reasons, we never ask for your password via email.</p>
-        </div>
-      </body>
-      </html>
-      `;
-  await sendEmail(userData.email, html);
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} Think Greenly. All rights reserved.</p>
+      <p>For security reasons, we never ask for your password via email.</p>
+    </div>
+  </body>
+  </html>
+`;
 
-
-  return null
+      await sendEmail(userData.email,html)
+      return null
 };
 
 // resetPassword

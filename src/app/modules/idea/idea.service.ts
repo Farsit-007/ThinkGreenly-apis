@@ -101,7 +101,7 @@ export class IdeaServices {
     const floatPrice = Number(payload.price);
     payload.price = floatPrice;
     const result = await prisma.idea.update({
-      where: { id, isDeleted: false },
+      where: { id, isDeleted: false, OR: [{ status: "DRAFT" }, { status: "UNDER_REVIEW" }] },
       data: payload,
     });
     return result;
