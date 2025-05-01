@@ -12,7 +12,7 @@ const createComments = catchAsync(async (req, res) => {
     );
   }
 
-  const result = await commentService.createCommentsIntoDB(req.body);
+  const result = await commentService.createCommentsIntoDB(req.body, req.user);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -42,7 +42,7 @@ const getAllComments = catchAsync(async (req, res) => {
 
 const deleteComments = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await commentService.deleteCommentFromDB(id);
+  const result = await commentService.deleteCommentFromDB(id, req.user);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'comment deleted successfully',
