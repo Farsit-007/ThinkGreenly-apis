@@ -21,7 +21,7 @@ export class IdeaServices {
         update: payload,
         create: payload,
       });
-      
+
       return result;
     } else {
       // Create a draft (no id provided)
@@ -39,15 +39,35 @@ export class IdeaServices {
     payload.authorId = userData.id;
     payload.status = IdeaStatus.UNDER_REVIEW;
 
-    const result = await prisma.idea.upsert({
-      where: {
-        id: payload.id,
-      },
-      update: payload,
-      create: payload,
-    });
+    // const result = await prisma.idea.upsert({
+    //   where: {
+    //     id: payload.id,
+    //   },
+    //   update: payload,
+    //   create: payload,
+    // });
 
-    return result;
+    // return result;
+
+    if (payload.id) {
+      // Update a previously created draft (upsert)
+      const result = await prisma.idea.upsert({
+        where: {
+          id: payload.id,
+        },
+        update: payload,
+        create: payload,
+      });
+
+      return result;
+    } else {
+      // Create a draft (no id provided)
+      const result = await prisma.idea.create({
+        data: payload,
+      });
+
+      return result;
+    }
   }
 
   // getAllIdeasFromDB
