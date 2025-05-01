@@ -5,17 +5,18 @@ import CommentsRoutes from '../modules/comments/comments.routes';
 import { adminRoutes } from '../modules/Admin/admin.route';
 import { userRoutes } from '../modules/Users/user.route';
 import { authRoutes } from '../modules/Auth/auth.route';
+import { paymentRoutes } from '../modules/Payment/payment.routes';
 
 const router = Router();
 
 const moduleRoutes = [
   {
-    path : '/users',
-    route : userRoutes
+    path: '/users',
+    route: userRoutes,
   },
   {
-    path : '/auth',
-    route : authRoutes
+    path: '/auth',
+    route: authRoutes,
   },
   {
     path: '/ideas',
@@ -29,8 +30,14 @@ const moduleRoutes = [
     path: '/comments',
     route: CommentsRoutes,
   },
-  {path: '/admin',
-  route: adminRoutes,}
+  {
+    path: '/admin',
+    route: adminRoutes,
+  },
+  {
+    path: '/payments',
+    route: paymentRoutes,
+  },
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

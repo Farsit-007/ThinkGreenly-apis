@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { PaymentController } from './payment.controller';
-import { PaymentValidation } from './payment.validation';
+import { paymentController } from './payment.controller';
+import { paymentValidation } from './payment.validation';
 import validateRequest from '../../middlewares/validateRequest';
 import { auth } from '../../middlewares/auth';
 import { Role } from '@prisma/client';
@@ -10,32 +10,32 @@ const router = Router();
 router.post(
   '/',
   auth(Role.MEMBER),
-  // validateRequest(PaymentValidation.createPaymentValidationSchema),
-  PaymentController.createPayment
+  validateRequest(paymentValidation.createPayment),
+  paymentController.createPayment
 );
 
-router.get('/', auth(Role.ADMIN), PaymentController.getAllPayments);
+router.get('/', auth(Role.ADMIN), paymentController.getAllPayments);
 
-router.get('/member', auth(Role.MEMBER), PaymentController.getMemberPayments);
+router.get('/member', auth(Role.MEMBER), paymentController.getMemberPayments);
 
 router.get(
   '/details/:paymentId',
   auth(Role.MEMBER, Role.ADMIN),
-  PaymentController.getPaymentDetails
+  paymentController.getPaymentDetails
 );
 
 // router.patch(
 //   '/:paymentId/status',
 //   auth(Role.ADMIN),
-//   validateRequest(PaymentValidation.changePaymentStatusValidationSchema),
+//   validateRequest(PaymentValidation.changePaymentStatus),
 //   PaymentController.changePaymentStatus
 // );
 
 router.patch(
   '/validate',
   auth(Role.MEMBER, Role.ADMIN),
-  validateRequest(PaymentValidation.validatePaymentValidationSchema),
-  PaymentController.validatePayment
+  validateRequest(paymentValidation.validatePayment),
+  paymentController.validatePayment
 );
 
-export const PaymentRoutes = router;
+export const paymentRoutes = router;

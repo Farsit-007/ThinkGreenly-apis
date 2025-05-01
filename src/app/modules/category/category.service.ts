@@ -3,14 +3,20 @@ import prisma from '../../config/prisma';
 import { PaginationHelper } from '../../builder/paginationHelper';
 import { ConditionsBuilder } from '../../builder/conditionsBuilder';
 import { CategoryFields } from './category.constants';
+import AppError from '../../errors/AppError';
+import { httpStatus } from '../../utils/httpStatus';
 
 // createCategoryIntoDB
 const createCategoryIntoDB = async (payload: Partial<Category>) => {
-  const result = await prisma.category.create({
-    data: {
-      name: payload.name!,
-    },
-  });
+  if (!payload.name) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Must give a name for the Title")
+
+  }
+    const result = await prisma.category.create({
+      data: {
+        name: payload.name,
+      },
+    });
 
   return result;
 };
