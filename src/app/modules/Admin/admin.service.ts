@@ -1,11 +1,70 @@
-import { IdeaStatus, Prisma } from "@prisma/client";
-import { PaginationHelper } from "../../builder/paginationHelper";
-import prisma from "../../config/prisma";
-import { ConditionsBuilder } from "../../builder/conditionsBuilder";
-import { ideaFields } from "./admin.constant";
+import { IdeaStatus, Prisma } from '@prisma/client';
+import { PaginationHelper } from '../../builder/paginationHelper';
+import prisma from '../../config/prisma';
+import { ConditionsBuilder } from '../../builder/conditionsBuilder';
+import { ideaFields, userFields } from './admin.constant';
 
+// getAllUsersFromDB
+const getAllUsersFromDB = async (query: Record<string, unknown>) => {
+  const { page, limit, skip, sortBy, sortOrder } =
+    PaginationHelper.calculatePagination(query);
 
-const getAllIdeas = async (query: Record<string, unknown>) => {
+  let andConditions: Prisma.UserWhereInput[] = [];
+
+  // Dynamically build query filters
+  andConditions = ConditionsBuilder.prisma(query, andConditions, userFields);
+
+  // Dynamic active filter
+  const activeFilter: Prisma.UserWhereInput = {
+    isActive: true, // single status filter
+  };
+
+  const whereConditions: Prisma.UserWhereInput =
+    andConditions.length > 0
+      ? {
+          AND: [...andConditions, activeFilter],
+        }
+      : activeFilter;
+
+  const result = await prisma.user.findMany({
+    where: whereConditions,
+    skip,
+    take: limit,
+    orderBy: { [sortBy]: sortOrder },
+  });
+
+  const count = await prisma.user.count({
+    where: whereConditions,
+  });
+
+  // const result = await prisma.user.findMany({
+  //   where: {
+  //     isActive: true,
+  //   },
+  //   skip,
+  //   take: limit,
+  //   orderBy: { [sortBy]: sortOrder },
+  // });
+
+  // const count = await prisma.user.count({
+  //   where: {
+  //     isActive: true,
+  //   },
+  // });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total: count,
+      totalPage: Math.ceil(count / limit),
+    },
+    data: result,
+  };
+};
+
+// getAllIdeasFromDB
+const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
   const { page, limit, skip, sortBy, sortOrder } =
     PaginationHelper.calculatePagination(query);
 
@@ -23,7 +82,7 @@ const getAllIdeas = async (query: Record<string, unknown>) => {
   } else {
     statusFilter = {
       status: {
-        in: [IdeaStatus.APPROVED,IdeaStatus.UNDER_REVIEW,IdeaStatus.APPROVED],
+        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED],
       },
     };
   }
@@ -39,31 +98,52 @@ const getAllIdeas = async (query: Record<string, unknown>) => {
     where: whereConditions,
     skip,
     take: limit,
-    orderBy:
-      sortBy && sortOrder
-        ? {
-            [sortBy]: sortOrder,
-          }
-        : {
-            createdAt: 'desc',
-          },
+    orderBy: { [sortBy]: sortOrder },
   });
 
   const count = await prisma.idea.count({
     where: whereConditions,
   });
 
+  // const result = await prisma.idea.findMany({
+  //   where: {
+  //     status: {
+  //   in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED],
+  // },
+  //   },
+  //   skip,
+  //   take: limit,
+  //   orderBy:
+  //     sortBy && sortOrder
+  //       ? {
+  //           [sortBy]: sortOrder,
+  //         }
+  //       : {
+  //           createdAt: 'desc',
+  //         },
+  // });
+
+  // const count = await prisma.idea.count({
+  //   where: {
+  //     status: {
+  //       in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED],
+  //     },
+  //   },
+  // });
+
   return {
     meta: {
       page,
       limit,
-      total: Number(count),
+      total: count,
       totalPage: Math.ceil(count / limit),
     },
     data: result,
   };
 };
-const updateIdeaStatus = async (id: string, status: IdeaStatus) => {
+
+// updateIdeaStatusIntoDB
+const updateIdeaStatusIntoDB = async (id: string, status: IdeaStatus) => {
   const result = await prisma.idea.update({
     where: {
       id,
@@ -73,14 +153,10 @@ const updateIdeaStatus = async (id: string, status: IdeaStatus) => {
     },
   });
   return result;
-}
+};
 
-
-  export const AdminService = {
-    getAllIdeas,
-    updateIdeaStatus
-  }
-
-
-
-
+export const AdminService = {
+  getAllUsersFromDB,
+  getAllIdeasFromDB,
+  updateIdeaStatusIntoDB,
+};

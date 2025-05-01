@@ -7,6 +7,8 @@ import bcrypt from 'bcrypt';
 import { generateToken, verifyToken } from '../../utils/jwtHalper';
 import { JwtPayload, Secret } from 'jsonwebtoken';
 import { sendEmail } from '../../utils/sendEmail';
+
+// loginUserIntoDB
 const loginUserIntoDB = async (payload: {
   email: string;
   password: string;
@@ -17,10 +19,12 @@ const loginUserIntoDB = async (payload: {
       isActive: true,
     },
   });
+
   const isPassswordCorrect: boolean = await bcrypt.compare(
     payload.password,
     userData.password
   );
+
   if (!isPassswordCorrect) {
     throw new AppError(httpStatus.FORBIDDEN, 'Invalid Credentials');
   }
@@ -47,6 +51,7 @@ const loginUserIntoDB = async (payload: {
   };
 };
 
+// refreshToken
 const refreshToken = async (token: string) => {
   let decodedData;
   try {
@@ -69,11 +74,13 @@ const refreshToken = async (token: string) => {
     config.jwt.jwt_secret as string,
     config.jwt.jwt_expiration as string
   );
+
   return {
     accessToken,
   };
 };
 
+// changedPassword
 const changedPassword = async (
   user: JwtPayload,
   payload: { oldPassword: string; newPassword: string }
@@ -93,37 +100,43 @@ const changedPassword = async (
     payload.oldPassword,
     userData.password
   );
+
   if (!isPassswordCorrect) {
     throw new AppError(httpStatus.FORBIDDEN, 'Invalid Credentials');
   }
+
   const hashedPassword: string = await bcrypt.hash(payload.newPassword, 12);
+
   await prisma.user.update({
     where: {
       email: userData.email,
     },
     data: {
       password: hashedPassword,
+      passwordChangedAt: new Date(),
     },
   });
-  return {
-    message: 'Password Changed Successfully',
-  };
+
+  return null;
 };
 
+// forgetPassword
 const forgetPassword = async (payload: { email: string }) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
-      isActive : true,
+      isActive: true,
     },
   });
 
   const resetPasswordToken = generateToken(
     { email: userData.email, role: userData.role },
-    config.password.reset_password_secret! ,
+    config.password.reset_password_secret!,
     config.password.reset_password_expiration!
   );
-  const resetPasswordLink = config.password.reset_password_link + `?id=${userData.id}&token=${resetPasswordToken}`
+  const resetPasswordLink =
+    config.password.reset_password_link +
+    `?id=${userData.id}&token=${resetPasswordToken}`;
   const html = `
       <!DOCTYPE html>
       <html>
@@ -182,10 +195,14 @@ const forgetPassword = async (payload: { email: string }) => {
         </div>
       </body>
       </html>
-      `
-      await sendEmail(userData.email,html)
+      `;
+  await sendEmail(userData.email, html);
+
+
+  return null
 };
 
+// resetPassword
 const resetPassword = async (
   token: string,
   payload: { id: string; password: string }
@@ -201,8 +218,9 @@ const resetPassword = async (
     token,
     config.password.reset_password_secret as Secret
   );
+
   if (!isValidToken) {
-    throw new AppError(httpStatus.FORBIDDEN, 'Forbidden!!');
+    throw new AppError(httpStatus.FORBIDDEN, 'Forbidden!');
   }
 
   const hashPassword: string = await bcrypt.hash(payload.password, 12);
@@ -213,8 +231,10 @@ const resetPassword = async (
     },
     data: {
       password: hashPassword,
+      passwordChangedAt: new Date(),
     },
   });
+
   return result;
 };
 

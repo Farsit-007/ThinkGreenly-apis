@@ -8,18 +8,20 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  password  String
-  role      Role       @default(MEMBER)
-  isActive  Boolean    @default(true)
-  ideas     Idea[]
-  votes     Vote[]
-  comments  Comment[]
-  purchases Purchase[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id                String     @id @default(uuid())
+  name              String
+  email             String     @unique
+  password          String
+  passwordChangedAt DateTime?
+  image             String?
+  role              Role       @default(MEMBER)
+  isActive          Boolean    @default(true)
+  ideas             Idea[]
+  votes             Vote[]
+  comments          Comment[]
+  purchases         Purchase[]
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 
   @@map("users")
 }
@@ -46,7 +48,7 @@ model Idea {
   feedback         String? // Rejection reason
   categoryId       String
   authorId         String
-  isSubmitted      Boolean    @default(false)
+  // isSubmitted      Boolean    @default(false)
   isDeleted        Boolean    @default(false)
   category         Category   @relation(fields: [categoryId], references: [id])
   author           User       @relation(fields: [authorId], references: [id])
