@@ -16,21 +16,22 @@ export const voteValidationSchema = z.object({
 });
 
 export const deleteVoteValidationSchema = z.object({
-  params: z.object({
+  body: z.object({
     ideaId: z.string({
       required_error: "Idea ID is required",
-    }).uuid({
-      message: "Invalid idea ID format",
-    }),
+    })
+      .uuid({
+        message: "Invalid idea ID format",
+      }).optional(),
   }),
 });
 
 export const getVoteStatsValidationSchema = z.object({
-  params: z.object({
+  body: z.object({
     ideaId: z.string({
       required_error: "Idea ID is required",
     }).uuid({
       message: "Invalid idea ID format",
-    }),
+    }).optional(),
   }),
 });

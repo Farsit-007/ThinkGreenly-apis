@@ -1,5 +1,5 @@
 import express from "express";
-import voteController from "./vote.controller";
+import {voteController} from "./vote.controller";
 import validateRequest from "../../middlewares/validateRequest";
 import {
   deleteVoteValidationSchema,
@@ -10,16 +10,16 @@ import { auth } from "../../middlewares/auth";
 
 const router = express.Router();
 
-// Routes for vote operations
 router.post(
   "/",
-  auth("MEMBER"), // Ensure only authenticated members can vote
+  auth("MEMBER"), 
   validateRequest(voteValidationSchema),
   voteController.createOrUpdateVote
 );
 
 router.delete(
   "/:ideaId",
+  // "/",
   auth("MEMBER"),
   validateRequest(deleteVoteValidationSchema),
   voteController.removeVote
@@ -27,12 +27,14 @@ router.delete(
 
 router.get(
   "/stats/:ideaId",
+  // "/stats",
   validateRequest(getVoteStatsValidationSchema),
   voteController.getVoteStats
 );
 
 router.get(
   "/:ideaId",
+  // "/",
   auth("MEMBER"),
   validateRequest(getVoteStatsValidationSchema),
   voteController.getUserVote
