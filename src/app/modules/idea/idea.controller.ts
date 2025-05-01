@@ -11,6 +11,7 @@ export class IdeaControllers {
   static createIdea = catchAsync(async (req, res) => {
     const payload = req.body;
     payload.images = [];
+    
     if (req.files && req.files instanceof Array) {
       const imageUrls = await Promise.all(
         req.files.map(async (file) => {
@@ -23,6 +24,7 @@ export class IdeaControllers {
       );
       payload.images = imageUrls;
     }
+    
     const result = await IdeaServices.createIdeaIntoDB(payload);
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -90,11 +92,11 @@ export class IdeaControllers {
 
   // deleteAIdea
   static deleteAIdea = catchAsync(async (req, res) => {
-    const result = await IdeaServices.deleteAnIdeaFromDB(req.params.id);
+    await IdeaServices.deleteAnIdeaFromDB(req.params.id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       message: 'Idea deleted successfully',
-      data: result,
+      data: null,
     });
   });
 }
