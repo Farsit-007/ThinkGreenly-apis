@@ -7,7 +7,7 @@ import { ideaFilterOptions, ideaPaginationOption } from './idea.constants';
 import { IdeaServices } from './idea.service';
 
 export class IdeaControllers {
-  // controller function for creating idea
+  // createIdea
   static createIdea = catchAsync(async (req, res) => {
     const payload = req.body;
     payload.images = [];
@@ -23,46 +23,39 @@ export class IdeaControllers {
       );
       payload.images = imageUrls;
     }
-    const result = await IdeaServices.createIdea(payload);
-    sendResponse(
-      res,
-      httpStatus.CREATED,
-      true,
-      'Idea created successfully',
-      undefined,
-      result
-    );
+    const result = await IdeaServices.createIdeaIntoDB(payload);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: 'Idea created successfully',
+      data: result,
+    });
   });
 
-  // controller function for get all ideas
+  // getAllIdeas
   static getAllIdeas = catchAsync(async (req, res) => {
     const filters = pick(req.query, ideaFilterOptions);
     const options = pick(req.query, ideaPaginationOption);
-    const result = await IdeaServices.getAllIdeas(filters, options);
-    sendResponse(
-      res,
-      httpStatus.OK,
-      true,
-      'Ideas fetched successfully',
-      result.meta,
-      result.data
-    );
+    const result = await IdeaServices.getAllIdeasFromDB(filters, options);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: 'Ideas fetched successfully',
+      meta: result.meta,
+      data: result.data,
+    });
   });
 
-  // controller function for getting a idea by id
+  // getSingleIdea
   static getSingleIdea = catchAsync(async (req, res) => {
-    const result = await IdeaServices.getSingleIdea(req.params.id);
-    sendResponse(
-      res,
-      httpStatus.OK,
-      true,
-      'Idea fetched successfully',
-      undefined,
-      result
-    );
+    const result = await IdeaServices.getSingleIdeaFromDB(req.params.id);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: 'Idea fetched successfully',
+      data: result,
+    });
   });
 
-  // controller function for updating a idea by id
+  // updateAIdea
   static updateAIdea = catchAsync(async (req, res) => {
     const payload = req.body;
 
@@ -79,33 +72,29 @@ export class IdeaControllers {
       );
       payload.images = imageUrls;
     } else {
-      const existingIdea = await IdeaServices.getSingleIdea(req.params.id);
+      const existingIdea = await IdeaServices.getSingleIdeaFromDB(
+        req.params.id
+      );
       if (existingIdea) {
         payload.images = existingIdea.images;
       }
     }
 
-    const result = await IdeaServices.updateIdea(req.params.id, payload);
-    sendResponse(
-      res,
-      httpStatus.OK,
-      true,
-      'Idea updated successfully',
-      undefined,
-      result
-    );
+    const result = await IdeaServices.updateIdeaFromDB(req.params.id, payload);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: 'Idea updated successfully',
+      data: result,
+    });
   });
 
-  // controller function for deleting a idea by id
+  // deleteAIdea
   static deleteAIdea = catchAsync(async (req, res) => {
-    const result = await IdeaServices.deleteAIdea(req.params.id);
-    sendResponse(
-      res,
-      httpStatus.OK,
-      true,
-      'Idea deleted successfully',
-      undefined,
-      result
-    );
+    const result = await IdeaServices.deleteAnIdeaFromDB(req.params.id);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: 'Idea deleted successfully',
+      data: result,
+    });
   });
 }
