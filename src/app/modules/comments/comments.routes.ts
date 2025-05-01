@@ -9,6 +9,6 @@ CommentsRoutes.post('/',auth(Role.MEMBER), commentController.createComments);
 
 CommentsRoutes.get('/',auth(Role.MEMBER), commentController.getAllComments);
 
-CommentsRoutes.delete('/:id',auth(Role.MEMBER, Role.ADMIN), commentController.deleteComments);
+CommentsRoutes.delete('/:id',auth( Role.ADMIN), commentController.deleteComments);
 
 export default CommentsRoutes;
