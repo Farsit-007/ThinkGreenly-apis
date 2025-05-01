@@ -8,20 +8,20 @@ datasource db {
 }
 
 model User {
-  id                String     @id @default(uuid())
+  id                String    @id @default(uuid())
   name              String
-  email             String     @unique
+  email             String    @unique
   password          String
   passwordChangedAt DateTime?
   image             String?
-  role              Role       @default(MEMBER)
-  isActive          Boolean    @default(true)
+  role              Role      @default(MEMBER)
+  isActive          Boolean   @default(true)
   ideas             Idea[]
   votes             Vote[]
   comments          Comment[]
-  purchases         Purchase[]
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
+  payments          Payment[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   @@map("users")
 }
@@ -54,7 +54,7 @@ model Idea {
   author           User       @relation(fields: [authorId], references: [id])
   votes            Vote[]
   comments         Comment[]
-  purchases        Purchase[]
+  payments         Payment[]
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 
@@ -89,16 +89,19 @@ model Comment {
   @@map("comments")
 }
 
-model Purchase {
-  id        String   @id @default(uuid())
-  userId    String
-  ideaId    String
-  user      User     @relation(fields: [userId], references: [id])
-  idea      Idea     @relation(fields: [ideaId], references: [id])
-  createdAt DateTime @default(now())
+model Payment {
+  id              String        @id @default(uuid())
+  userId          String
+  ideaId          String
+  user            User          @relation(fields: [userId], references: [id])
+  idea            Idea          @relation(fields: [ideaId], references: [id])
+  amount          Float
+  status          PaymentStatus @default(Pending)
+  transactionId   String        @unique
+  gatewayResponse Json?
+  createdAt       DateTime      @default(now())
 
-  @@unique([userId, ideaId]) // Prevent duplicate purchase
-  @@map("purchases")
+  @@map("payments")
 }
 
 enum VoteType {
@@ -116,4 +119,10 @@ enum IdeaStatus {
 enum Role {
   MEMBER
   ADMIN
+}
+
+enum PaymentStatus {
+  Pending
+  Paid
+  Failed
 }

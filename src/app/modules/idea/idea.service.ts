@@ -90,7 +90,7 @@ export class IdeaServices {
         author: true,
         category: true,
         comments: true,
-        purchases: true,
+        payments: true,
       },
     });
 

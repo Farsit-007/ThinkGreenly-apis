@@ -34,4 +34,12 @@ export default {
     user: process.env.SMTP_USER,
     password: process.env.SMTP_APP_PASSWORD,
   },
+
+  ssl: {
+    store_id: process.env.STORE_ID,
+    store_password: process.env.STORE_PASSWORD,
+    validation_url: process.env.VALIDATION_URL,
+    fail_url: process.env.FAIL_URL,
+    cancel_url: process.env.CANCEL_URL,
+  },
 };
