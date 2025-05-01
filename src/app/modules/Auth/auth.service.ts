@@ -105,7 +105,10 @@ const changedPassword = async (
     throw new AppError(httpStatus.FORBIDDEN, 'Invalid Credentials');
   }
 
-  const hashedPassword: string = await bcrypt.hash(payload.newPassword, 12);
+  const hashedPassword: string = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds)
+  );
 
   await prisma.user.update({
     where: {
@@ -238,7 +241,10 @@ const resetPassword = async (
     throw new AppError(httpStatus.FORBIDDEN, 'Forbidden!');
   }
 
-  const hashPassword: string = await bcrypt.hash(payload.password, 12);
+  const hashPassword: string = await bcrypt.hash(
+    payload.password,
+    Number(config.bcrypt_salt_rounds)
+  );
 
   const result = await prisma.user.update({
     where: {

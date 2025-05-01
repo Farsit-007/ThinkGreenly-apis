@@ -6,7 +6,10 @@ import { JwtPayload } from 'jsonwebtoken';
 
 // createUserIntoDB
 const createUserIntoDB = async (payload: IUser) => {
-  const hashPassword: string = await bcrypt.hash(payload.password, 12);
+  const hashPassword: string = await bcrypt.hash(
+    payload.password,
+    Number(config.bcrypt_salt_rounds)
+  );
   const userData = {
     ...payload,
     role: Role.MEMBER,
@@ -16,7 +19,7 @@ const createUserIntoDB = async (payload: IUser) => {
   const result = await prisma.user.create({
     data: userData,
   });
-  
+
   return result;
 };
 
