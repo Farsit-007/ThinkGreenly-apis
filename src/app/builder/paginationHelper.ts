@@ -1,45 +1,35 @@
 import { globalPaginationOptions } from '../constants/global.constants';
 import pick from '../utils/pick';
 
-type TPaginationOptions = {
-  page?: number;
-  limit?: number;
-  sortBy?: string | undefined;
-  sortOrder?: string | undefined;
+export type TPaginationOptions = {
+  page?: string;
+  limit?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 };
 
-type IOptionsResult = {
+export type TPaginationReturn = {
   page: number;
   limit: number;
   skip: number;
   sortBy: string;
-  sortOrder: string;
+  sortOrder: 'asc' | 'desc';
 };
 
 const calculatePagination = (
   query: Record<string, unknown>
-): IOptionsResult => {
+): TPaginationReturn => {
   const options: TPaginationOptions = pick(query, globalPaginationOptions);
 
-  const page: number = Number(options.page) || 1;
+  const page: number = Number(options?.page) || 1;
   const limit: number = Number(options?.limit) || 10;
 
-  const skip = (Number(page) - 1) * Number(limit);
+  const skip: number = (page - 1) * limit;
 
-  const sortBy: string = options?.sortBy || 'id';
+  const sortBy: string = options?.sortBy || 'createdAt';
+  const sortOrder: 'asc' | 'desc' = options?.sortOrder || 'desc';
 
-  let sortOrder: string = 'desc';
-  if (options?.sortOrder === 'asc' || options?.sortOrder === 'desc') {
-    sortOrder = options.sortOrder;
-  }
-
-  return {
-    page,
-    limit,
-    skip,
-    sortBy,
-    sortOrder,
-  };
+  return { page, limit, skip, sortBy, sortOrder };
 };
 
 export const PaginationHelper = {

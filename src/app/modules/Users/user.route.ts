@@ -9,7 +9,7 @@ import { Role } from '@prisma/client';
 const router = express.Router();
 
 router.post(
-  '/create-user',
+  '/',
   validateRequest(userValidation.createUserSchema),
   userControllers.createUser
 );

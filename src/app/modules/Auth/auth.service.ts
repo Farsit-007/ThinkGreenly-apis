@@ -17,10 +17,12 @@ const loginUserIntoDB = async (payload: {
       isActive: true,
     },
   });
+
   const isPassswordCorrect: boolean = await bcrypt.compare(
     payload.password,
     userData.password
   );
+  
   if (!isPassswordCorrect) {
     throw new AppError(httpStatus.FORBIDDEN, 'Invalid Credentials');
   }
