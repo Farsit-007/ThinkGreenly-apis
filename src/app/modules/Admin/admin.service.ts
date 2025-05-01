@@ -82,7 +82,7 @@ const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
   } else {
     statusFilter = {
       status: {
-        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED],
+        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED,IdeaStatus.REJECTED],
       },
     };
   }
