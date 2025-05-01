@@ -14,17 +14,12 @@ const getAllUsersFromDB = async (query: Record<string, unknown>) => {
   // Dynamically build query filters
   andConditions = ConditionsBuilder.prisma(query, andConditions, userFields);
 
-  // Dynamic active filter
-  const activeFilter: Prisma.UserWhereInput = {
-    isActive: true, // single status filter
-  };
-
   const whereConditions: Prisma.UserWhereInput =
     andConditions.length > 0
       ? {
-          AND: [...andConditions, activeFilter],
+          AND: andConditions,
         }
-      : activeFilter;
+      : {};
 
   const result = await prisma.user.findMany({
     where: whereConditions,

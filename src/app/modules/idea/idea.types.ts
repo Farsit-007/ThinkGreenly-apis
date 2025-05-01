@@ -2,6 +2,7 @@
 import { IdeaStatus } from '@prisma/client';
 
 export type TIdeaPayload = {
+  id: string;
   title: string;
   problemStatement: string;
   solution: string;
@@ -15,6 +16,7 @@ export type TIdeaPayload = {
   categoryId: string;
   authorId: string;
 };
+
 export type TIdeaFilterParams = {
   searchTerm?: string;
   title?: string;

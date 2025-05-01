@@ -50,7 +50,7 @@ export const auth = (...requiredRoles: string[]) => {
       );
     }
 
-    req.user = decoded;
+    req.user = { ...decoded, id: user.id };
     next();
   });
 };

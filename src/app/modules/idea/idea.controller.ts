@@ -7,11 +7,11 @@ import { ideaFilterOptions, ideaPaginationOption } from './idea.constants';
 import { IdeaServices } from './idea.service';
 
 export class IdeaControllers {
-  // createIdea
-  static createIdea = catchAsync(async (req, res) => {
+  // draftAnIdea
+  static draftAnIdea = catchAsync(async (req, res) => {
     const payload = req.body;
     payload.images = [];
-    
+
     if (req.files && req.files instanceof Array) {
       const imageUrls = await Promise.all(
         req.files.map(async (file) => {
@@ -24,11 +24,37 @@ export class IdeaControllers {
       );
       payload.images = imageUrls;
     }
-    
-    const result = await IdeaServices.createIdeaIntoDB(payload);
+
+    const result = await IdeaServices.draftAnIdeaIntoDB(req.user, payload);
     sendResponse(res, {
       statusCode: httpStatus.OK,
-      message: 'Idea created successfully',
+      message: 'Idea drafted successfully',
+      data: result,
+    });
+  });
+
+  // createAnIdea
+  static createAnIdea = catchAsync(async (req, res) => {
+    const payload = req.body;
+    payload.images = [];
+
+    if (req.files && req.files instanceof Array) {
+      const imageUrls = await Promise.all(
+        req.files.map(async (file) => {
+          const { secure_url } = await sendImageToCloudinary(
+            file.filename,
+            file.buffer
+          );
+          return secure_url;
+        })
+      );
+      payload.images = imageUrls;
+    }
+
+    const result = await IdeaServices.createAnIdeaIntoDB(req.user, payload);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: 'Idea posted successfully',
       data: result,
     });
   });

@@ -38,19 +38,19 @@ model Category {
 model Idea {
   id               String     @id @default(uuid())
   title            String
-  problemStatement String
-  solution         String
-  description      String
+  problemStatement String?
+  solution         String?
+  description      String?
   images           String[] // Use array of image URLs
   isPaid           Boolean    @default(false)
   price            Float? // Only needed if isPaid = true
   status           IdeaStatus @default(DRAFT)
   feedback         String? // Rejection reason
-  categoryId       String
+  categoryId       String?
   authorId         String
   // isSubmitted      Boolean    @default(false)
   isDeleted        Boolean    @default(false)
-  category         Category   @relation(fields: [categoryId], references: [id])
+  category         Category?  @relation(fields: [categoryId], references: [id])
   author           User       @relation(fields: [authorId], references: [id])
   votes            Vote[]
   comments         Comment[]
