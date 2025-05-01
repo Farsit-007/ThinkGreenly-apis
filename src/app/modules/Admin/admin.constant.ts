@@ -1,7 +1,7 @@
 import { TModelFieldsType } from '../../types';
 
 export const ideaFields: TModelFieldsType = {
-  tableName: 'ideas',
+  tableName: 'Idea',
   searchable: [],
   filterableStringFields: [],
   filterableNumberFields: [],
@@ -9,7 +9,7 @@ export const ideaFields: TModelFieldsType = {
 };
 
 export const userFields: TModelFieldsType = {
-  tableName: 'users',
+  tableName: 'User',
   searchable: [],
   filterableStringFields: [],
   filterableNumberFields: [],
