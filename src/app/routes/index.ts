@@ -8,7 +8,6 @@ import { authRoutes } from '../modules/Auth/auth.route';
 import { paymentRoutes } from '../modules/Payment/payment.routes';
 import { voteRoutes } from '../modules/vote/vote.routes';
 
-
 const router = Router();
 
 const moduleRoutes = [
@@ -19,13 +18,6 @@ const moduleRoutes = [
   {
     path: '/auth',
     route: authRoutes,
-
-    route: userRoutes
-  },
-  {
-    path: '/auth',
-    route: authRoutes
-
   },
   {
     path: '/ideas',
@@ -47,9 +39,10 @@ const moduleRoutes = [
     path: '/payments',
     route: paymentRoutes,
   },
+  {
     path: '/votes',
     route: voteRoutes,
-  }
+  },
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
