@@ -149,9 +149,21 @@ const updateIdeaStatusIntoDB = async (id: string, status:Partial<Idea>) => {
   });
   return result;
 };
+// updateUserActiveStatus
+const updateUserActiveStatus = async (id: string, status:{isActive:boolean}) => {
+  const result = await prisma.user.update({
+    where: {
+      id
+    },
+    data: {isActive:status.isActive || false },
+    
+  });
+  return result;
+};
 
 export const AdminService = {
   getAllUsersFromDB,
   getAllIdeasFromDB,
   updateIdeaStatusIntoDB,
+  updateUserActiveStatus
 };

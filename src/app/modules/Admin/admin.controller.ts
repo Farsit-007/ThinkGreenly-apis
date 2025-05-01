@@ -38,9 +38,21 @@ const updateIdeaStatus = catchAsync(async (req, res) => {
     data: result,
   });
 });
+// updateUserActiveStatus
+const updateUserActiveStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await AdminService.updateUserActiveStatus(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Idea status updated successfully!',
+    data: result,
+  });
+});
 
 export const AdminController = {
   getAllUsers,
   getAllIdeas,
   updateIdeaStatus,
+  updateUserActiveStatus
 };
