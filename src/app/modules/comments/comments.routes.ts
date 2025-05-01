@@ -1,8 +1,14 @@
 import { Router } from 'express';
 import { commentController } from './comments.controller';
+import { auth } from '../../middlewares/auth';
+import { Role } from '@prisma/client';
 
 const CommentsRoutes = Router();
 
-CommentsRoutes.post('/', commentController.createComments);
+CommentsRoutes.post('/',auth(Role.MEMBER), commentController.createComments);
 
-export default CommentsRoutes
+CommentsRoutes.get('/',auth(Role.MEMBER), commentController.getAllComments);
+
+CommentsRoutes.delete('/:id',auth(Role.MEMBER, Role.ADMIN), commentController.deleteComments);
+
+export default CommentsRoutes;
