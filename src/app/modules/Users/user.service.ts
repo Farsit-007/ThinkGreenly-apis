@@ -1,8 +1,9 @@
 import prisma from '../../config/prisma';
 import bcrypt from 'bcrypt';
 import { IUser } from './user.interface';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { JwtPayload } from 'jsonwebtoken';
+
 const createUserIntoDB = async (payload: IUser) => {
   const hashPassword: string = await bcrypt.hash(payload.password, 12);
   const userData = {
@@ -46,7 +47,7 @@ const getMyProfile = async (user: JwtPayload) => {
     profileInfo = await prisma.user.findUnique({
       where: {
         email: userData.email,
-        role : Role.ADMIN
+        role: Role.ADMIN,
       },
       select: {
         id: true,
@@ -59,7 +60,7 @@ const getMyProfile = async (user: JwtPayload) => {
     profileInfo = await prisma.user.findUnique({
       where: {
         email: userData.email,
-        role : Role.MEMBER
+        role: Role.MEMBER,
       },
       select: {
         id: true,
@@ -72,8 +73,28 @@ const getMyProfile = async (user: JwtPayload) => {
   return profileInfo;
 };
 
+const getSingleUserFromDB = async (id: string): Promise<User | null> => {
+  const result = await prisma.user.findUniqueOrThrow({
+    where: { id },
+  });
+  return result;
+};
+
+const updateProfile = async (
+  id: string,
+  payload: Partial<IUser>
+): Promise<User | null> => {
+  const result = await prisma.user.update({
+    where: { id, isActive: true },
+    data: payload,
+  });
+  return result;
+};
+
 export const userServices = {
   createUserIntoDB,
   changeUserStatus,
   getMyProfile,
+  getSingleUserFromDB,
+  updateProfile,
 };

@@ -9,7 +9,6 @@ IdeaRoutes.post(
   uploadFile.array('images', 10),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
-    
     next();
   },
   IdeaControllers.createIdea
