@@ -37,7 +37,7 @@ const loginUserIntoDB = async (payload: {
     config.jwt.jwt_secret as string,
     config.jwt.jwt_expiration as string
   );
-  const resfreshToken = generateToken(
+  const refreshToken = generateToken(
     {
       email: userData.email,
       role: userData.role,
@@ -47,7 +47,7 @@ const loginUserIntoDB = async (payload: {
   );
   return {
     accessToken,
-    resfreshToken,
+    refreshToken,
   };
 };
 
