@@ -151,7 +151,6 @@ const updateIdeaStatusIntoDB = async (id: string, status:Partial<Idea>) => {
 };
 // updateUserActiveStatus
 const updateUserActiveStatus = async (id: string, status:{isActive:boolean}) => {
-  console.log('status', status);
   const result = await prisma.user.update({
     where: {
       id
