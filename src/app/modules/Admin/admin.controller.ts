@@ -6,20 +6,24 @@ import { AdminService } from './admin.service';
 // getAllUsers
 const getAllUsers = catchAsync(async (req, res) => {
   const result = await AdminService.getAllUsersFromDB(req.query);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'All users fetched successfully!',
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 
 // getAllIdeas
 const getAllIdeas = catchAsync(async (req, res) => {
   const result = await AdminService.getAllIdeasFromDB(req.query);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'All ideas fetched successfully!',
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 
@@ -27,6 +31,18 @@ const getAllIdeas = catchAsync(async (req, res) => {
 const updateIdeaStatus = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await AdminService.updateIdeaStatusIntoDB(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Idea status updated successfully!',
+    data: result,
+  });
+});
+// updateUserActiveStatus
+const updateUserActiveStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await AdminService.updateUserActiveStatus(id, req.body);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Idea status updated successfully!',
@@ -38,4 +54,5 @@ export const AdminController = {
   getAllUsers,
   getAllIdeas,
   updateIdeaStatus,
+  updateUserActiveStatus
 };

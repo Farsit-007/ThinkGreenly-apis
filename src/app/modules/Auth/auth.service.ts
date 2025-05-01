@@ -7,6 +7,8 @@ import bcrypt from 'bcrypt';
 import { generateToken, verifyToken } from '../../utils/jwtHalper';
 import { JwtPayload, Secret } from 'jsonwebtoken';
 import { sendEmail } from '../../utils/sendEmail';
+
+// loginUserIntoDB
 const loginUserIntoDB = async (payload: {
   email: string;
   password: string;
@@ -22,7 +24,7 @@ const loginUserIntoDB = async (payload: {
     payload.password,
     userData.password
   );
-  
+
   if (!isPassswordCorrect) {
     throw new AppError(httpStatus.FORBIDDEN, 'Invalid Credentials');
   }
@@ -49,6 +51,7 @@ const loginUserIntoDB = async (payload: {
   };
 };
 
+// refreshToken
 const refreshToken = async (token: string) => {
   let decodedData;
   try {
@@ -71,11 +74,13 @@ const refreshToken = async (token: string) => {
     config.jwt.jwt_secret as string,
     config.jwt.jwt_expiration as string
   );
+
   return {
     accessToken,
   };
 };
 
+// changedPassword
 const changedPassword = async (
   user: JwtPayload,
   payload: { oldPassword: string; newPassword: string }
@@ -95,99 +100,127 @@ const changedPassword = async (
     payload.oldPassword,
     userData.password
   );
+
   if (!isPassswordCorrect) {
     throw new AppError(httpStatus.FORBIDDEN, 'Invalid Credentials');
   }
-  const hashedPassword: string = await bcrypt.hash(payload.newPassword, 12);
+
+  const hashedPassword: string = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds)
+  );
+
   await prisma.user.update({
     where: {
       email: userData.email,
     },
     data: {
       password: hashedPassword,
+      passwordChangedAt: new Date(),
     },
   });
-  return {
-    message: 'Password Changed Successfully',
-  };
+
+  return null;
 };
 
+// forgetPassword
 const forgetPassword = async (payload: { email: string }) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
-      isActive : true,
+      isActive: true,
     },
   });
 
   const resetPasswordToken = generateToken(
     { email: userData.email, role: userData.role },
-    config.password.reset_password_secret! ,
+    config.password.reset_password_secret!,
     config.password.reset_password_expiration!
   );
-  const resetPasswordLink = config.password.reset_password_link + `?id=${userData.id}&token=${resetPasswordToken}`
+  const resetPasswordLink =
+    config.password.reset_password_link +
+    `?id=${userData.id}&token=${resetPasswordToken}`;
   const html = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body { font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
-          .header { background-color: #2a5c99; color: white; padding: 20px; text-align: center; }
-          .content { padding: 20px; }
-          .reset-button {
-            display: inline-block;
-            background-color: #2a5c99;
-            color: white !important;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
-            margin: 15px 0;
-          }
-          .footer {
-            background-color: #f4f4f4;
-            padding: 15px;
-            text-align: center;
-            font-size: 12px;
-          }
-          .warning { color: #d9534f; font-weight: bold; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>🔒 Password Reset Request</h1>
-        </div>
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .header {
+        background-color: #2e7d32; /* Changed to green */
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+      .content {
+        padding: 20px;
+      }
+      .reset-button {
+        display: inline-block;
+        background-color: #2e7d32; /* Changed to green */
+        color: white !important;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        margin: 15px 0;
+      }
+      .footer {
+        background-color: #f4f4f4;
+        padding: 15px;
+        text-align: center;
+        font-size: 12px;
+      }
+      .warning {
+        color: #d9534f;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🌳🌴🌲 Password Reset Request</h1>
+    </div>
 
-        <div class="content">
+    <div class="content">
 
-          <p>We received a request to reset your ThinkGreenly account password.</p>
+      <p>We received a request to reset your ThinkGreenly account password.</p>
 
-          <center>
-            <a href="${resetPasswordLink}" class="reset-button">
-              Reset Password
-            </a>
-          </center>
+      <center>
+        <a href="${resetPasswordLink}" class="reset-button">
+          Reset Password
+        </a>
+      </center>
 
-          <p class="warning">⚠️ This link will expire in <strong>10 minutes</strong>.</p>
+      <p class="warning">⚠️ This link will expire in <strong>10 minutes</strong>.</p>
 
-          <p>If you didn't request this password reset, please:</p>
-          <ol>
-            <li>Ignore this email</li>
-            <li>Secure your account</li>
-            <li>Contact our support team if you notice suspicious activity</li>
-          </ol>
-        </div>
+      <p>If you didn't request this password reset, please:</p>
+      <ol>
+        <li>Ignore this email</li>
+        <li>Secure your account</li>
+        <li>Contact our support team if you notice suspicious activity</li>
+      </ol>
+    </div>
 
-        <div class="footer">
-          <p>© ${new Date().getFullYear()} Think Greenly. All rights reserved.</p>
-          <p>For security reasons, we never ask for your password via email.</p>
-        </div>
-      </body>
-      </html>
-      `
-      await sendEmail(userData.email,html)
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} Think Greenly. All rights reserved.</p>
+      <p>For security reasons, we never ask for your password via email.</p>
+    </div>
+  </body>
+  </html>
+`;
+
+  await sendEmail(userData.email, html);
+  return null;
 };
 
+// resetPassword
 const resetPassword = async (
   token: string,
   payload: { id: string; password: string }
@@ -203,11 +236,15 @@ const resetPassword = async (
     token,
     config.password.reset_password_secret as Secret
   );
+
   if (!isValidToken) {
-    throw new AppError(httpStatus.FORBIDDEN, 'Forbidden!!');
+    throw new AppError(httpStatus.FORBIDDEN, 'Forbidden!');
   }
 
-  const hashPassword: string = await bcrypt.hash(payload.password, 12);
+  const hashPassword: string = await bcrypt.hash(
+    payload.password,
+    Number(config.bcrypt_salt_rounds)
+  );
 
   const result = await prisma.user.update({
     where: {
@@ -215,8 +252,10 @@ const resetPassword = async (
     },
     data: {
       password: hashPassword,
+      passwordChangedAt: new Date(),
     },
   });
+
   return result;
 };
 

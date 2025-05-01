@@ -3,7 +3,7 @@ import { CategoryController } from './category.controller';
 
 const CategoryRoutes = Router();
 
-CategoryRoutes.post('/create-category', CategoryController.createCategory);
+CategoryRoutes.post('/', CategoryController.createCategory);
 
 CategoryRoutes.get('/', CategoryController.getAllCategories);
 

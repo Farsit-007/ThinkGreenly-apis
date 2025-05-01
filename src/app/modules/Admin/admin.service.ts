@@ -1,78 +1,49 @@
-import { IdeaStatus, Prisma } from '@prisma/client';
+import { Idea, IdeaStatus, Prisma } from '@prisma/client';
 import { PaginationHelper } from '../../builder/paginationHelper';
 import prisma from '../../config/prisma';
 import { ConditionsBuilder } from '../../builder/conditionsBuilder';
-import { ideaFields } from './admin.constant';
+import { ideaFields, userFields } from './admin.constant';
 
 // getAllUsersFromDB
 const getAllUsersFromDB = async (query: Record<string, unknown>) => {
   const { page, limit, skip, sortBy, sortOrder } =
     PaginationHelper.calculatePagination(query);
 
-  let andConditions: Prisma.IdeaWhereInput[] = [];
+  let andConditions: Prisma.UserWhereInput[] = [];
 
   // Dynamically build query filters
-  andConditions = ConditionsBuilder.prisma(query, andConditions, ideaFields);
+  andConditions = ConditionsBuilder.prisma(query, andConditions, userFields);
 
-  // Dynamic status filter
-  let statusFilter: Prisma.IdeaWhereInput;
-
-  if (query?.status) {
-    statusFilter = {
-      status: query.status as IdeaStatus, // single status filter
-    };
-  } else {
-    statusFilter = {
-      status: {
-        in: [IdeaStatus.APPROVED, IdeaStatus.UNDER_REVIEW],
-      },
-    };
-  }
-
-  const whereConditions: Prisma.IdeaWhereInput =
+  const whereConditions: Prisma.UserWhereInput =
     andConditions.length > 0
       ? {
-          AND: [...andConditions, statusFilter],
+          AND: andConditions,
         }
-      : statusFilter;
+      : {};
 
-  const result = await prisma.idea.findMany({
+  const result = await prisma.user.findMany({
     where: whereConditions,
     skip,
     take: limit,
-    orderBy:
-      sortBy && sortOrder
-        ? {
-            [sortBy]: sortOrder,
-          }
-        : {
-            createdAt: 'desc',
-          },
+    orderBy: { [sortBy]: sortOrder },
   });
 
-  const count = await prisma.idea.count({
+  const count = await prisma.user.count({
     where: whereConditions,
   });
 
-  // const result = await prisma.idea.findMany({
+  // const result = await prisma.user.findMany({
   //   where: {
-  //     isSubmitted: true,
+  //     isActive: true,
   //   },
   //   skip,
   //   take: limit,
-  //   orderBy:
-  //     sortBy && sortOrder
-  //       ? {
-  //           [sortBy]: sortOrder,
-  //         }
-  //       : {
-  //           createdAt: 'desc',
-  //         },
+  //   orderBy: { [sortBy]: sortOrder },
   // });
 
-  // const count = await prisma.idea.count({
+  // const count = await prisma.user.count({
   //   where: {
-  //     isSubmitted: true,
+  //     isActive: true,
   //   },
   // });
 
@@ -106,7 +77,7 @@ const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
   } else {
     statusFilter = {
       status: {
-        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED],
+        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED,IdeaStatus.REJECTED],
       },
     };
   }
@@ -167,14 +138,25 @@ const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
 };
 
 // updateIdeaStatusIntoDB
-const updateIdeaStatusIntoDB = async (id: string, status: IdeaStatus) => {
+const updateIdeaStatusIntoDB = async (id: string, status:Partial<Idea>) => {
   const result = await prisma.idea.update({
     where: {
       id,
+      isDeleted:false
     },
-    data: {
-      status,
+    data: {...status },
+    
+  });
+  return result;
+};
+// updateUserActiveStatus
+const updateUserActiveStatus = async (id: string, status:{isActive:boolean}) => {
+  const result = await prisma.user.update({
+    where: {
+      id
     },
+    data: {isActive:status.isActive || false },
+    
   });
   return result;
 };
@@ -183,4 +165,5 @@ export const AdminService = {
   getAllUsersFromDB,
   getAllIdeasFromDB,
   updateIdeaStatusIntoDB,
+  updateUserActiveStatus
 };

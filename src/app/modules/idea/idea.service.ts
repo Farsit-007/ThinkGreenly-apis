@@ -4,26 +4,70 @@ import { Idea, IdeaStatus } from '@prisma/client';
 import prisma from '../../config/prisma';
 import { TIdeaFilterParams, TIdeaPayload } from './idea.types';
 import { ideaFilters } from './idea.utilities';
+import { JwtPayload } from 'jsonwebtoken';
 
 export class IdeaServices {
-  // createIdeaIntoDB
-  static async createIdeaIntoDB(payload: TIdeaPayload) {    
-    const result = await prisma.idea.create({
-      data: {
-      title: payload.title,
-      problemStatement: payload.problemStatement,
-      solution: payload.solution,
-      description: payload.description, 
-      price: Number(payload.price),
-      isPaid: payload.isPaid,
-      status: payload.status as IdeaStatus,
-      feedback: payload.feedback,
-      categoryId: payload.categoryId,
-      authorId: payload.authorId,
-      images: payload.images,
-    },
-    });
-    return result;
+  // draftAnIdeaIntoDB
+  static async draftAnIdeaIntoDB(userData: JwtPayload, payload: TIdeaPayload) {
+    payload.price = payload.price ? Number(payload.price) : 0;
+    payload.authorId = userData.id;
+
+    if (payload.id) {
+      // Update a previously created draft (upsert)
+      const result = await prisma.idea.upsert({
+        where: {
+          id: payload.id,
+        },
+        update: payload,
+        create: payload,
+      });
+
+      return result;
+    } else {
+      // Create a draft (no id provided)
+      const result = await prisma.idea.create({
+        data: payload,
+      });
+
+      return result;
+    }
+  }
+
+  // createAnIdeaIntoDB
+  static async createAnIdeaIntoDB(userData: JwtPayload, payload: TIdeaPayload) {
+    payload.price = Number(payload.price);
+    payload.authorId = userData.id;
+    payload.status = IdeaStatus.UNDER_REVIEW;
+
+    // const result = await prisma.idea.upsert({
+    //   where: {
+    //     id: payload.id,
+    //   },
+    //   update: payload,
+    //   create: payload,
+    // });
+
+    // return result;
+
+    if (payload.id) {
+      // Update a previously created draft (upsert)
+      const result = await prisma.idea.upsert({
+        where: {
+          id: payload.id,
+        },
+        update: payload,
+        create: payload,
+      });
+
+      return result;
+    } else {
+      // Create a draft (no id provided)
+      const result = await prisma.idea.create({
+        data: payload,
+      });
+
+      return result;
+    }
   }
 
   // getAllIdeasFromDB
@@ -46,9 +90,10 @@ export class IdeaServices {
         author: true,
         category: true,
         comments: true,
-        purchases: true,
+        payments: true,
       },
     });
+
     const count = await prisma.idea.count({ where: filterOptions });
 
     return {
@@ -65,7 +110,7 @@ export class IdeaServices {
   // getSingleIdeaFromDB
   static getSingleIdeaFromDB = async (id: string): Promise<Idea | null> => {
     const result = await prisma.idea.findUnique({
-      where: { id,isDeleted:false },
+      where: { id, isDeleted: false },
     });
 
     return result;
@@ -76,22 +121,28 @@ export class IdeaServices {
     id: string,
     payload: Partial<Idea>
   ): Promise<Idea | null> => {
-
     const floatPrice = Number(payload.price);
     payload.price = floatPrice;
+
     const result = await prisma.idea.update({
-      where: { id,isDeleted:false },
+      where: {
+        id,
+        isDeleted: false,
+        OR: [{ status: IdeaStatus.DRAFT }, { status: IdeaStatus.UNDER_REVIEW }],
+      },
       data: payload,
     });
+
     return result;
   };
 
   // deleteAnIdeaFromDB
   static deleteAnIdeaFromDB = async (id: string) => {
     const result = await prisma.idea.update({
-      where: { id,isDeleted:false },
-      data: {isDeleted:true}
+      where: { id, isDeleted: false },
+      data: { isDeleted: true },
     });
+
     return result;
   };
 }

@@ -7,3 +7,11 @@ export const ideaFields: TModelFieldsType = {
   filterableNumberFields: [],
   filterableBooleanFields: [],
 };
+
+export const userFields: TModelFieldsType = {
+  tableName: 'User',
+  searchable: [],
+  filterableStringFields: [],
+  filterableNumberFields: [],
+  filterableBooleanFields: [],
+};
