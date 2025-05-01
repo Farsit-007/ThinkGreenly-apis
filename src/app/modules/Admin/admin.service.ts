@@ -1,4 +1,4 @@
-import { IdeaStatus, Prisma } from '@prisma/client';
+import { Idea, IdeaStatus, Prisma } from '@prisma/client';
 import { PaginationHelper } from '../../builder/paginationHelper';
 import prisma from '../../config/prisma';
 import { ConditionsBuilder } from '../../builder/conditionsBuilder';
@@ -77,7 +77,7 @@ const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
   } else {
     statusFilter = {
       status: {
-        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED],
+        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED,IdeaStatus.REJECTED],
       },
     };
   }
@@ -138,14 +138,25 @@ const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
 };
 
 // updateIdeaStatusIntoDB
-const updateIdeaStatusIntoDB = async (id: string, status: IdeaStatus) => {
+const updateIdeaStatusIntoDB = async (id: string, status:Partial<Idea>) => {
   const result = await prisma.idea.update({
     where: {
       id,
+      isDeleted:false
     },
-    data: {
-      status,
+    data: {...status },
+    
+  });
+  return result;
+};
+// updateUserActiveStatus
+const updateUserActiveStatus = async (id: string, status:{isActive:boolean}) => {
+  const result = await prisma.user.update({
+    where: {
+      id
     },
+    data: {isActive:status.isActive || false },
+    
   });
   return result;
 };
@@ -154,4 +165,5 @@ export const AdminService = {
   getAllUsersFromDB,
   getAllIdeasFromDB,
   updateIdeaStatusIntoDB,
+  updateUserActiveStatus
 };
