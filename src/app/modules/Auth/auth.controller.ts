@@ -4,21 +4,25 @@ import sendResponse from '../../utils/sendResponse';
 import { authServices } from './auth.service';
 
 const loginUser = catchAsync(async (req, res) => {
-  const { accessToken, resfreshToken } = await authServices.loginUserIntoDB(
+  const { accessToken, refreshToken } = await authServices.loginUserIntoDB(
     req.body
   );
 
-  // res.cookie('refreshToken', resfreshToken, {
-  //   secure: false,
-  //   httpOnly: true,
-  // });
+  res.cookie('refreshToken', refreshToken, {
+    secure: false,
+    httpOnly: true,
+  });
+  res.cookie('accessToken', accessToken, {
+    secure: false,
+    httpOnly: true,
+  });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Logged in successfully',
     data: {
       accessToken,
-      resfreshToken,
+      refreshToken,
     },
   });
 });
@@ -62,7 +66,7 @@ const resetPassword = catchAsync(async (req, res) => {
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
-    message: 'Password reseted',
+    message: 'Password reseated',
     data: result,
   });
 });
