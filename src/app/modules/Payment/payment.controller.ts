@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { PaymentService } from './payment.service';
+import { paymentService } from './payment.service';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { httpStatus } from '../../utils/httpStatus';
 
 // create Payment
 const createPayment = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.createPaymentIntoDB(req.body, req.user);
+  const result = await paymentService.createPaymentIntoDB(req.body, req.user);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -17,7 +17,7 @@ const createPayment = catchAsync(async (req: Request, res: Response) => {
 
 // get All Payments (admin)
 const getAllPayments = async (req: Request, res: Response) => {
-  const result = await PaymentService.getAllPaymentsFromDB(req.query);
+  const result = await paymentService.getAllPaymentsFromDB(req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -29,7 +29,7 @@ const getAllPayments = async (req: Request, res: Response) => {
 
 // getMemberPayments
 const getMemberPayments = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.getMemberPaymentsFromDB(
+  const result = await paymentService.getMemberPaymentsFromDB(
     req.query,
     req.user
   );
@@ -44,7 +44,7 @@ const getMemberPayments = catchAsync(async (req: Request, res: Response) => {
 
 // get Payment Details
 const getPaymentDetails = catchAsync(async (req: Request, res: Response) => {
-  const result = await PaymentService.getPaymentDetailsFromDB(
+  const result = await paymentService.getPaymentDetailsFromDB(
     req.params.paymentId,
     req.user
   );
@@ -75,8 +75,7 @@ const getPaymentDetails = catchAsync(async (req: Request, res: Response) => {
 // validate Payment
 const validatePayment = catchAsync(async (req: Request, res: Response) => {
   const tran_id = req.query.tran_id as string;
-
-  const result = await PaymentService.validatePayment(tran_id, req.user);
+  const result = await paymentService.validatePayment(tran_id, req.user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -85,7 +84,7 @@ const validatePayment = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const PaymentController = {
+export const paymentController = {
   createPayment,
   getAllPayments,
   getMemberPayments,

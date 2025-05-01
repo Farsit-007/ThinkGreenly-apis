@@ -7,7 +7,7 @@ import AppError from '../../errors/AppError';
 import { httpStatus } from '../../utils/httpStatus';
 import prisma from '../../config/prisma';
 import { PaginationHelper } from '../../builder/paginationHelper';
-import { Prisma } from '@prisma/client';
+import { PaymentStatus, Prisma } from '@prisma/client';
 import { ConditionsBuilder } from '../../builder/conditionsBuilder';
 import { paymentFields } from './payment.constants';
 
@@ -16,10 +16,20 @@ const createPaymentIntoDB = async (
   paymentData: TPayment,
   userData: JwtPayload
 ) => {
+  const idea = await prisma.idea.findUnique({
+    where: {
+      id: paymentData.ideaId,
+      isDeleted: false,
+    },
+  });
+  if (!idea) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Idea not Found!');
+  }
   const transactionId = sslService.generateTransactionId();
 
   paymentData.userId = userData.id;
-  paymentData.status = 'Pending';
+  paymentData.amount = idea.price!;
+  paymentData.status = PaymentStatus.Pending;
   paymentData.transactionId = transactionId;
 
   // create the Payment
@@ -183,7 +193,7 @@ const validatePayment = async (transactionId: string, authUser: JwtPayload) => {
   return result;
 };
 
-export const PaymentService = {
+export const paymentService = {
   createPaymentIntoDB,
   getAllPaymentsFromDB,
   getMemberPaymentsFromDB,

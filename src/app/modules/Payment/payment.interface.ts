@@ -1,4 +1,4 @@
-import { PaymentStatus, Prisma } from '@prisma/client';
+import { PaymentStatus } from '@prisma/client';
 
 export type TPayment = {
   userId: string;
@@ -6,6 +6,6 @@ export type TPayment = {
   amount: number;
   status: PaymentStatus; // default: 'Pending',
   transactionId: string; // default: null,
-  gatewayResponse?: Prisma.InputJsonValue; // default: null,
-  createdAt?: Date;
+  // gatewayResponse?: Prisma.InputJsonValue; // default: null,
+  // createdAt?: Date;
 };

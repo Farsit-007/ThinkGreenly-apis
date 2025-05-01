@@ -5,18 +5,27 @@ import CommentsRoutes from '../modules/comments/comments.routes';
 import { adminRoutes } from '../modules/Admin/admin.route';
 import { userRoutes } from '../modules/Users/user.route';
 import { authRoutes } from '../modules/Auth/auth.route';
+import { paymentRoutes } from '../modules/Payment/payment.routes';
 import { voteRoutes } from '../modules/vote/vote.routes';
+
 
 const router = Router();
 
 const moduleRoutes = [
   {
     path: '/users',
+    route: userRoutes,
+  },
+  {
+    path: '/auth',
+    route: authRoutes,
+
     route: userRoutes
   },
   {
     path: '/auth',
     route: authRoutes
+
   },
   {
     path: '/ideas',
@@ -35,6 +44,9 @@ const moduleRoutes = [
     route: adminRoutes,
   },
   {
+    path: '/payments',
+    route: paymentRoutes,
+  },
     path: '/votes',
     route: voteRoutes,
   }
