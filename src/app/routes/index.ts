@@ -1,6 +1,6 @@
 import express from 'express';
 import IdeaRoutes from '../modules/idea/idea.route';
-import { CategoryRoutes } from '../modules/category/category.route';
+import CategoryRoutes from '../modules/category/category.route';
 
 const router = express.Router();
 
@@ -8,6 +8,8 @@ const moduleRoutes = [
   {
     path: '/ideas',
     route: IdeaRoutes,
+  },
+  {
     path: '/categories',
     route: CategoryRoutes,
   },
