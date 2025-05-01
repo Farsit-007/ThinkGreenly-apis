@@ -21,12 +21,14 @@ export class IdeaServices {
         update: payload,
         create: payload,
       });
+      
       return result;
     } else {
       // Create a draft (no id provided)
       const result = await prisma.idea.create({
         data: payload,
       });
+
       return result;
     }
   }
@@ -71,6 +73,7 @@ export class IdeaServices {
         purchases: true,
       },
     });
+
     const count = await prisma.idea.count({ where: filterOptions });
 
     return {
@@ -100,10 +103,16 @@ export class IdeaServices {
   ): Promise<Idea | null> => {
     const floatPrice = Number(payload.price);
     payload.price = floatPrice;
+
     const result = await prisma.idea.update({
-      where: { id, isDeleted: false, OR: [{ status: "DRAFT" }, { status: "UNDER_REVIEW" }] },
+      where: {
+        id,
+        isDeleted: false,
+        OR: [{ status: IdeaStatus.DRAFT }, { status: IdeaStatus.UNDER_REVIEW }],
+      },
       data: payload,
     });
+
     return result;
   };
 
@@ -113,6 +122,7 @@ export class IdeaServices {
       where: { id, isDeleted: false },
       data: { isDeleted: true },
     });
+
     return result;
   };
 }
