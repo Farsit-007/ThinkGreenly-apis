@@ -3,6 +3,8 @@ import { uploadFile } from '../../utils/cloudinaryImageUploader';
 import { IdeaControllers } from './idea.controller';
 import { auth } from '../../middlewares/auth';
 import { Role } from '@prisma/client';
+import validateRequest from '../../middlewares/validateRequest';
+import { ideaValidationSchemas } from './idea.validation';
 
 const IdeaRoutes: Router = Router();
 
@@ -14,6 +16,7 @@ IdeaRoutes.post(
     req.body = JSON.parse(req.body.data);
     next();
   },
+  validateRequest(ideaValidationSchemas.draftAnIdea),
   IdeaControllers.draftAnIdea
 );
 
@@ -25,6 +28,7 @@ IdeaRoutes.post(
     req.body = JSON.parse(req.body.data);
     next();
   },
+  validateRequest(ideaValidationSchemas.createAnIdea),
   IdeaControllers.createAnIdea
 );
 
@@ -41,6 +45,7 @@ IdeaRoutes.put(
 
     next();
   },
+  validateRequest(ideaValidationSchemas.createAnIdea),
   IdeaControllers.updateAIdea
 );
 

@@ -213,8 +213,8 @@ const forgetPassword = async (payload: { email: string }) => {
   </html>
 `;
 
-      await sendEmail(userData.email,html)
-      return null
+  await sendEmail(userData.email, html);
+  return null;
 };
 
 // resetPassword
