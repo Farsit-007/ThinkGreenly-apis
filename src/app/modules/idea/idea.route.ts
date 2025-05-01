@@ -9,7 +9,7 @@ const IdeaRoutes: Router = Router();
 IdeaRoutes.post(
   '/draft',
   uploadFile.array('images', 10),
-  auth(Role.MEMBER),
+  auth(Role.MEMBER, Role.ADMIN),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
     next();
@@ -20,7 +20,7 @@ IdeaRoutes.post(
 IdeaRoutes.post(
   '/',
   uploadFile.array('images', 10),
-  auth(Role.MEMBER),
+  auth(Role.MEMBER, Role.ADMIN),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
     next();
@@ -35,6 +35,7 @@ IdeaRoutes.get('/:id', IdeaControllers.getSingleIdea);
 IdeaRoutes.put(
   '/:id',
   uploadFile.array('images', 10),
+  auth(Role.MEMBER, Role.ADMIN),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
 
