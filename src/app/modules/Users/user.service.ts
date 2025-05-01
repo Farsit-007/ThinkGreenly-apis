@@ -4,6 +4,7 @@ import { IUser } from './user.interface';
 import { Role, User } from '@prisma/client';
 import { JwtPayload } from 'jsonwebtoken';
 
+// createUserIntoDB
 const createUserIntoDB = async (payload: IUser) => {
   const hashPassword: string = await bcrypt.hash(payload.password, 12);
   const userData = {
@@ -11,12 +12,15 @@ const createUserIntoDB = async (payload: IUser) => {
     role: Role.MEMBER,
     password: hashPassword,
   };
+
   const result = await prisma.user.create({
     data: userData,
   });
+  
   return result;
 };
 
+// changeUserStatus
 const changeUserStatus = async (
   userId: string,
   payload: { isActive: boolean; role: Role }
@@ -26,6 +30,7 @@ const changeUserStatus = async (
       id: userId,
     },
   });
+
   const result = await prisma.user.update({
     where: {
       id: userData.id,
