@@ -7,7 +7,6 @@ import { IVotePayload } from "./vote.interface";
 import { JwtPayload } from "jsonwebtoken";
 import prisma from "../../config/prisma";
 
-
 const createOrUpdateVote = catchAsync(async (req: Request, res: Response) => {
   const user = req.user as JwtPayload;
   const payload: IVotePayload = req.body;
@@ -80,7 +79,6 @@ const getUserVote = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
 
 export const voteController = {
   createOrUpdateVote,
