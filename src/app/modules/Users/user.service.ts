@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { IUser } from './user.interface';
 import { Role, User } from '@prisma/client';
 import { JwtPayload } from 'jsonwebtoken';
+import config from '../../config';
 
 // createUserIntoDB
 const createUserIntoDB = async (payload: IUser) => {
