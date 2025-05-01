@@ -80,9 +80,9 @@ const createAnIdea = z.object({
       })
       .trim(),
 
-    price: z.number({
+    price: z.string({
       required_error: 'Price is required!',
-      invalid_type_error: 'Price must be number!',
+      invalid_type_error: 'Price must be string!',
     }),
 
     categoryId: z.string({
