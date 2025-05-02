@@ -40,6 +40,7 @@ const loginUserIntoDB = async (payload: {
     config.jwt.jwt_secret as string,
     config.jwt.jwt_expiration as string
   );
+
   const refreshToken = generateToken(
     {
       email: userData.email,
@@ -50,6 +51,7 @@ const loginUserIntoDB = async (payload: {
     config.jwt.refresh_secret as string,
     config.jwt.jwt_refresh_expiration as string
   );
+  
   return {
     accessToken,
     refreshToken,
@@ -149,6 +151,7 @@ const forgetPassword = async (payload: { email: string }) => {
     config.password.reset_password_secret!,
     config.password.reset_password_expiration!
   );
+
   const resetPasswordLink =
     config.password.reset_password_link +
     `?id=${userData.id}&token=${resetPasswordToken}`;

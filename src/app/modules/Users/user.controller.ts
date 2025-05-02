@@ -49,18 +49,25 @@ const updateProfile = catchAsync(async (req, res) => {
       req.file.buffer
     );
     payload.image = secure_url;
-  } 
-  else {
+  } else {
     const existingUser = await userServices.getSingleUserFromDB(req.params.id);
     if (existingUser) {
       payload.image = existingUser.image;
     }
   }
-  const result = await userServices.updateProfile(req.params.id, payload);
+
+  const { accessToken, refreshToken } = await userServices.updateProfile(
+    req.params.id,
+    payload
+  );
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Profile updated successfully',
-    data: result,
+    data: {
+      accessToken,
+      refreshToken,
+    },
   });
 });
 
