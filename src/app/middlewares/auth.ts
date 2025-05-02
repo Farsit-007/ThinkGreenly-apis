@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import AppError from '../errors/AppError';
 import { httpStatus } from '../utils/httpStatus';
-import { verifyToken } from '../utils/jwtHalper';
+import { verifyToken } from '../utils/jwtHelper';
 import config from '../config';
 import { Secret } from 'jsonwebtoken';
 import catchAsync from '../utils/catchAsync';
