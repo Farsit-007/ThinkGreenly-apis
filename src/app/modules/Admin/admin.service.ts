@@ -26,6 +26,7 @@ const getAllUsersFromDB = async (query: Record<string, unknown>) => {
     skip,
     take: limit,
     orderBy: { [sortBy]: sortOrder },
+    include: {votes:true,payments:true,comments: true,ideas: true}
   });
 
   const count = await prisma.user.count({
