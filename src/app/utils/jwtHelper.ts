@@ -4,6 +4,7 @@ import AppError from '../errors/AppError';
 import { httpStatus } from './httpStatus';
 
 type TAuthUser = {
+  id?: string;
   name: string;
   image: string;
   email: string;

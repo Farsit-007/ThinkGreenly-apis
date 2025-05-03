@@ -107,6 +107,45 @@ export class IdeaServices {
     };
   };
 
+  // get own ideas from DB
+  static getOwnAllIdeasFromDB = async (
+    params?: TIdeaFilterParams,
+    options?: any,
+    user?: JwtPayload
+  ) => {
+    const { limit, page, skip } = options;
+    const filterOptions = ideaFilters(params);
+    const whereOptions = {authorId:user?.id,...filterOptions}
+    const result = await prisma.idea.findMany({
+      where: whereOptions,
+      skip: page ? skip : undefined,
+      take: limit ? limit : undefined,
+      orderBy:
+        options.sortBy && options.sortOrder
+          ? { [options.sortBy]: options.sortOrder }
+          : { createdAt: 'desc' },
+      include: {
+        votes: true,
+        author: true,
+        category: true,
+        comments: true,
+        payments: true,
+      },
+    });
+
+    const count = await prisma.idea.count({ where: whereOptions });
+
+    return {
+      meta: {
+        page: page || 1,
+        limit: limit || 10,
+        total: count,
+        totalPage: Math.ceil(count / limit),
+      },
+      data: result,
+    };
+  };
+
   // getSingleIdeaFromDB
   static getSingleIdeaFromDB = async (id: string): Promise<Idea | null> => {
     const result = await prisma.idea.findUnique({

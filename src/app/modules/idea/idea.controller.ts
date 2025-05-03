@@ -73,6 +73,20 @@ export class IdeaControllers {
     });
   });
 
+  // get all own ideas
+  static getOwnAllIdeas = catchAsync(async (req, res) => {
+    const filters = pick(req.query, ideaFilterOptions);
+    const options = pick(req.query, ideaPaginationOption);
+    const result = await IdeaServices.getOwnAllIdeasFromDB(filters, options,req.user);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: 'Ideas fetched successfully',
+      meta: result.meta,
+      data: result.data,
+    });
+  });
+
   // getSingleIdea
   static getSingleIdea = catchAsync(async (req, res) => {
     const result = await IdeaServices.getSingleIdeaFromDB(req.params.id);
