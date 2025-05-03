@@ -5,6 +5,7 @@ import prisma from '../../config/prisma';
 import { TIdeaFilterParams, TIdeaPayload } from './idea.types';
 import { ideaFilters } from './idea.utilities';
 import { JwtPayload } from 'jsonwebtoken';
+import { PaginationHelper } from '../../builder/paginationHelper';
 
 export class IdeaServices {
   // draftAnIdeaIntoDB
@@ -75,7 +76,7 @@ export class IdeaServices {
     params?: TIdeaFilterParams,
     options?: any
   ) => {
-    const { limit, page, skip } = options;
+    const { limit, page, skip } = PaginationHelper.calculatePagination(options);
     const filterOptions = ideaFilters(params);
     const result = await prisma.idea.findMany({
       where: filterOptions,
@@ -113,7 +114,7 @@ export class IdeaServices {
     options?: any,
     user?: JwtPayload
   ) => {
-    const { limit, page, skip } = options;
+    const { limit, page, skip } = PaginationHelper.calculatePagination(options);
     const filterOptions = ideaFilters(params);
     const whereOptions = {authorId:user?.id,...filterOptions}
     const result = await prisma.idea.findMany({
