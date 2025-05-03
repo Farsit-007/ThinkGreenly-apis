@@ -2,10 +2,12 @@ import { Request, Response } from "express";
 import { httpStatus } from "../../utils/httpStatus";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import {voteService} from "./vote.service";
+import { voteService } from "./vote.service";
 import { IVotePayload } from "./vote.interface";
 import { JwtPayload } from "jsonwebtoken";
 import prisma from "../../config/prisma";
+import pick from "../../utils/pick";
+import { ideaFilterOptions, ideaPaginationOption } from "../idea/idea.constants";
 
 const createOrUpdateVote = catchAsync(async (req: Request, res: Response) => {
   const user = req.user as JwtPayload;
@@ -50,7 +52,7 @@ const removeVote = catchAsync(async (req, res) => {
 
 
 const getVoteStats = catchAsync(async (req: Request, res: Response) => {
-  const ideaId  = req.params.ideaId;
+  const ideaId = req.params.ideaId;
   const result = await voteService.getVoteStats(ideaId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -71,7 +73,7 @@ const getUserVote = catchAsync(async (req: Request, res: Response) => {
     throw new Error("User not found or user ID is missing.");
   }
   const userId = userData?.id;
-  const ideaId  = req.params.ideaId;
+  const ideaId = req.params.ideaId;
   const result = await voteService.getUserVote(userId, ideaId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -80,9 +82,26 @@ const getUserVote = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+
+const getAllIdeasByVotes = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, ideaFilterOptions);
+  const options = pick(req.query, ideaPaginationOption);
+  const result = await voteService.getAllIdeasByVotes(filters, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Ideas fetched and sorted(desc) by votes successfully',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+
 export const voteController = {
   createOrUpdateVote,
   removeVote,
   getVoteStats,
-  getUserVote
+  getUserVote,
+  getAllIdeasByVotes,
 };
