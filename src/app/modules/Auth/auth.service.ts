@@ -32,7 +32,6 @@ const loginUserIntoDB = async (payload: {
 
   const accessToken = generateToken(
     {
-      id:userData.id,
       email: userData.email,
       role: userData.role,
       image: userData?.image || defaultUserImage,
@@ -44,7 +43,6 @@ const loginUserIntoDB = async (payload: {
 
   const refreshToken = generateToken(
     {
-      id: userData.id,
       email: userData.email,
       role: userData.role,
       image: userData?.image || defaultUserImage,
@@ -77,7 +75,6 @@ const refreshToken = async (token: string) => {
 
   const accessToken = generateToken(
     {
-      id: userData.id,
       email: userData.email,
       role: userData.role,
       image: userData?.image || defaultUserImage,
