@@ -14,7 +14,7 @@ import { paymentFields } from './payment.constants';
 // create Payment
 const createPaymentIntoDB = async (
   paymentData: TPayment,
-  userData: JwtPayload
+  authUser: JwtPayload
 ) => {
   const idea = await prisma.idea.findUnique({
     where: {
@@ -27,7 +27,7 @@ const createPaymentIntoDB = async (
   }
   const transactionId = sslService.generateTransactionId();
 
-  paymentData.userId = userData.id;
+  paymentData.userEmail = authUser.email;
   paymentData.amount = idea.price!;
   paymentData.status = PaymentStatus.Pending;
   paymentData.transactionId = transactionId;
@@ -99,7 +99,7 @@ const getMemberPaymentsFromDB = async (
   andConditions = ConditionsBuilder.prisma(query, andConditions, paymentFields);
 
   andConditions.push({
-    userId: authUser.id,
+    userEmail: authUser.email,
   });
 
   const whereConditions: Prisma.PaymentWhereInput =
@@ -139,7 +139,7 @@ const getPaymentDetailsFromDB = async (
   const payment = await prisma.payment.findUnique({
     where: {
       id: paymentId,
-      userId: authUser.id,
+      userEmail: authUser.email,
     },
   });
 
@@ -159,7 +159,7 @@ const getPaymentDetailsFromDB = async (
 //   const payment = await prisma.payment.findUnique({
 //     where: {
 //       id: paymentId,
-//       userId: authUser.id,
+//       userEmail: authUser.email,
 //     },
 //   });
 //   if (!payment) {
@@ -180,7 +180,7 @@ const validatePayment = async (transactionId: string, authUser: JwtPayload) => {
   const payment = await prisma.payment.findUnique({
     where: {
       transactionId,
-      userId: authUser.id,
+      userEmail: authUser.email,
     },
   });
 

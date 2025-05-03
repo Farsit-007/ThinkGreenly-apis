@@ -91,9 +91,9 @@ model Comment {
 
 model Payment {
   id              String        @id @default(uuid())
-  userId          String
+  userEmail       String
   ideaId          String
-  user            User          @relation(fields: [userId], references: [id])
+  user            User          @relation(fields: [userEmail], references: [email])
   idea            Idea          @relation(fields: [ideaId], references: [id])
   amount          Float
   status          PaymentStatus @default(Pending)

@@ -6,7 +6,7 @@ export const ideaFilterOptions = [
   'categoryId',
 ];
 
-export const searchFields = [
+export const ideaSearchableFields = [
   'title',
   'problemStatement',
   'solution',
