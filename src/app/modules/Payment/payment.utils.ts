@@ -7,11 +7,10 @@ import { JwtPayload } from 'jsonwebtoken';
 import prisma from '../../config/prisma';
 import { PaymentStatus } from '@prisma/client';
 
-
 const generateTransactionId = (): string => {
   const timestamp = Date.now().toString().slice(-6);
   const randomString = Math.random().toString(36).substring(2, 12);
-  return `${timestamp}${randomString}`;
+  return `${timestamp}-${randomString}`;
 };
 
 const store_id = config.ssl.store_id as string;
@@ -79,7 +78,7 @@ const initializaPayment = async (total_amount: number, tran_id: string) => {
 // validate Payment
 const validatePayment = async (
   tran_id: string,
-  userData: JwtPayload
+  authUser: JwtPayload
   //   rental: TRental,
 ) => {
   const sslcz = new SSLCommerzPayment(store_id, store_password, is_live);
@@ -113,7 +112,7 @@ const validatePayment = async (
   const updatedPayment = await prisma.payment.update({
     where: {
       transactionId: tran_id,
-      userId: userData.id,
+      userEmail: authUser.email,
     },
     data: data,
   });

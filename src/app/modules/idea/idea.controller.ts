@@ -15,10 +15,11 @@ export class IdeaControllers {
     if (req.files && req.files instanceof Array) {
       const imageUrls = await Promise.all(
         req.files.map(async (file) => {
-          const { secure_url } = await sendImageToCloudinary(
-            file.filename,
-            file.buffer
-          );
+          const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e3);
+          const imageName = `${uniqueSuffix}-${req.user?.email.split('@')[0]}`;
+          const path = file?.buffer;
+
+          const { secure_url } = await sendImageToCloudinary(imageName, path);
           return secure_url;
         })
       );
@@ -41,10 +42,11 @@ export class IdeaControllers {
     if (req.files && req.files instanceof Array) {
       const imageUrls = await Promise.all(
         req.files.map(async (file) => {
-          const { secure_url } = await sendImageToCloudinary(
-            file.filename,
-            file.buffer
-          );
+          const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e3);
+          const imageName = `${uniqueSuffix}-${req.user?.email.split('@')[0]}`;
+          const path = file?.buffer;
+
+          const { secure_url } = await sendImageToCloudinary(imageName, path);
           return secure_url;
         })
       );
@@ -77,7 +79,11 @@ export class IdeaControllers {
   static getOwnAllIdeas = catchAsync(async (req, res) => {
     const filters = pick(req.query, ideaFilterOptions);
     const options = pick(req.query, ideaPaginationOption);
-    const result = await IdeaServices.getOwnAllIdeasFromDB(filters, options,req.user);
+    const result = await IdeaServices.getOwnAllIdeasFromDB(
+      filters,
+      options,
+      req.user
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -105,10 +111,11 @@ export class IdeaControllers {
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       const imageUrls = await Promise.all(
         req.files.map(async (file) => {
-          const { secure_url } = await sendImageToCloudinary(
-            file.filename,
-            file.buffer
-          );
+          const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e3);
+          const imageName = `${uniqueSuffix}-${req.user?.email.split('@')[0]}`;
+          const path = file?.buffer;
+
+          const { secure_url } = await sendImageToCloudinary(imageName, path);
           return secure_url;
         })
       );

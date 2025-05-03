@@ -1,7 +1,7 @@
 import { PaymentStatus } from '@prisma/client';
 
 export type TPayment = {
-  userId: string;
+  userEmail: string;
   ideaId: string;
   amount: number;
   status: PaymentStatus; // default: 'Pending',

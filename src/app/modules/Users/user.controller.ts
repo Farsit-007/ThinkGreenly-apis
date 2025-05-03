@@ -44,10 +44,12 @@ const updateProfile = catchAsync(async (req, res) => {
   const payload = req.body;
 
   if (req.file) {
-    const { secure_url } = await sendImageToCloudinary(
-      req.file.filename,
-      req.file.buffer
-    );
+    const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e3);
+    const imageName = `${uniqueSuffix}-${req.user?.email.split('@')[0]}`;
+    const path = req.file?.buffer;
+
+    const { secure_url } = await sendImageToCloudinary(imageName, path);
+
     payload.image = secure_url;
   } else {
     const existingUser = await userServices.getSingleUserFromDB(req.params.id);

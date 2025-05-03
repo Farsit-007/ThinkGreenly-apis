@@ -1,25 +1,21 @@
 export const ideaFilterOptions = [
   'searchTerm',
-  'title',
-  'problemStatement',
-  'solution',
-  'description',
   'isPaid',
-  'price',
-  "minPrice",
-  "maxPrice",
-  'status',
-  'feedback',
+  'minPrice',
+  'maxPrice',
   'categoryId',
-  'authorId',
 ];
-export const searchFields = [
+
+export const ideaSearchableFields = [
   'title',
   'problemStatement',
   'solution',
   'description',
-  'status',
-  'feedback',
-  
+  // 'isPaid',
+  // 'price',
+  // 'status',
+  // 'feedback',
+  // 'categoryId',
+  // 'authorId',
 ];
 export const ideaPaginationOption = ['page', 'limit', 'sortBy', 'sortOrder'];
