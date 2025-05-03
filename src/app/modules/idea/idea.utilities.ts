@@ -1,12 +1,13 @@
-import { Prisma } from '@prisma/client';
-import { TIdeaFilterParams } from './idea.types';
-import { searchFields } from './idea.constants';
+import { Prisma } from "@prisma/client";
+import { TIdeaFilterParams } from "./idea.types";
+import { searchFields } from "./idea.constants";
 
 export const ideaFilters = (
   params?: TIdeaFilterParams
 ): Prisma.IdeaWhereInput | undefined => {
   if (!params) return undefined;
-  const { searchTerm, ...exactFilters } = params;
+
+  const { searchTerm, minPrice, maxPrice, ...restFilters } = params;
 
   const where: Prisma.IdeaWhereInput = {};
 
@@ -21,31 +22,28 @@ export const ideaFilters = (
 
   const andConditions: Prisma.IdeaWhereInput[] = [];
 
-  for (const key in exactFilters) {
-    const value = exactFilters[key];
-    if (value !== undefined && value !== '') {
-      andConditions.push({ [key]: value });
-    }
+  if (minPrice || maxPrice) {
+    const priceFilter: Prisma.FloatFilter = {};
+    if (minPrice) priceFilter.gte = Number(minPrice);
+    if (maxPrice) priceFilter.lte = Number(maxPrice);
+    andConditions.push({ price: priceFilter });
   }
 
-  for (const key in exactFilters) {
-    const value = exactFilters[key];
+  for (const key in restFilters) {
+    let value = restFilters[key as keyof typeof restFilters];
     if (value !== undefined && value !== '') {
-      if (typeof exactFilters.isPaid === 'string') {
-        if (exactFilters.isPaid === 'true') {
-          exactFilters.isPaid = true;
-        }
-        if (exactFilters.isPaid === 'false') {
-          exactFilters.isPaid = false;
-        }
+      if (key === 'isPaid' || key === 'isDeleted') {
+        value = value === 'true';
       }
       andConditions.push({ [key]: value });
     }
   }
 
-    andConditions.push({ isDeleted: false });
+  andConditions.push({ isDeleted: false });
+
   if (andConditions.length) {
     where.AND = andConditions;
   }
+
   return where;
 };
