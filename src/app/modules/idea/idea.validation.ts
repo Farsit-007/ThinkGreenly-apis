@@ -9,8 +9,8 @@ const draftAnIdea = z.object({
         invalid_type_error: 'Title must be string!',
       })
       .trim()
-      .min(10, { message: 'Name must have minimum 10 characters!' })
-      .max(60, { message: "Name can't exceed 60 characters!" }),
+      .min(10, { message: 'Title must have minimum 10 characters!' })
+      .max(60, { message: "Title can't exceed 60 characters!" }),
 
     problemStatement: z
       .string({
@@ -56,8 +56,8 @@ const createAnIdea = z.object({
         invalid_type_error: 'Title must be string!',
       })
       .trim()
-      .min(10, { message: 'Name must have minimum 10 characters!' })
-      .max(60, { message: "Name can't exceed 60 characters!" }),
+      .min(10, { message: 'Title must have minimum 10 characters!' })
+      .max(60, { message: "Title can't exceed 60 characters!" }),
 
     problemStatement: z
       .string({
@@ -80,7 +80,7 @@ const createAnIdea = z.object({
       })
       .trim(),
 
-    price: z.string({
+    price: z.number({
       required_error: 'Price is required!',
       invalid_type_error: 'Price must be string!',
     }),

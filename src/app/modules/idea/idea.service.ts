@@ -79,7 +79,10 @@ export class IdeaServices {
     const { limit, page, skip } = PaginationHelper.calculatePagination(options);
     const filterOptions = ideaFilters(params);
     const result = await prisma.idea.findMany({
-      where: filterOptions,
+      where: {
+        ...filterOptions,
+        status: IdeaStatus.APPROVED,
+      },
       skip: page ? skip : undefined,
       take: limit ? limit : undefined,
       orderBy:
@@ -95,7 +98,12 @@ export class IdeaServices {
       },
     });
 
-    const count = await prisma.idea.count({ where: filterOptions });
+    const count = await prisma.idea.count({
+      where: {
+        ...filterOptions,
+        status: IdeaStatus.APPROVED,
+      },
+    });
 
     return {
       meta: {
@@ -116,7 +124,7 @@ export class IdeaServices {
   ) => {
     const { limit, page, skip } = PaginationHelper.calculatePagination(options);
     const filterOptions = ideaFilters(params);
-    const whereOptions = {authorId:user?.id,...filterOptions}
+    const whereOptions = { authorId: user?.id, ...filterOptions };
     const result = await prisma.idea.findMany({
       where: whereOptions,
       skip: page ? skip : undefined,
