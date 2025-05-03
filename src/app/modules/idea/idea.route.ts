@@ -28,7 +28,7 @@ IdeaRoutes.post(
   auth(Role.MEMBER, Role.ADMIN),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
-    console.log(req.files,req.body)
+    
     next();
   },
 

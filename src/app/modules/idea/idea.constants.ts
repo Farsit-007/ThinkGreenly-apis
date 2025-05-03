@@ -6,6 +6,8 @@ export const ideaFilterOptions = [
   'description',
   'isPaid',
   'price',
+  "minPrice",
+  "maxPrice",
   'status',
   'feedback',
   'categoryId',
@@ -16,11 +18,8 @@ export const searchFields = [
   'problemStatement',
   'solution',
   'description',
-  'isPaid',
-  'price',
   'status',
   'feedback',
-  'categoryId',
-  'authorId',
+  
 ];
 export const ideaPaginationOption = ['page', 'limit', 'sortBy', 'sortOrder'];
