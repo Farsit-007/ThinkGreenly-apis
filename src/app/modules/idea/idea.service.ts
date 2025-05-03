@@ -79,10 +79,7 @@ export class IdeaServices {
     const { limit, page, skip } = PaginationHelper.calculatePagination(options);
     const filterOptions = ideaFilters(params);
     const result = await prisma.idea.findMany({
-      where: {
-        ...filterOptions,
-        status: IdeaStatus.APPROVED,
-      },
+      where: filterOptions,
       skip: page ? skip : undefined,
       take: limit ? limit : undefined,
       orderBy:
@@ -98,12 +95,7 @@ export class IdeaServices {
       },
     });
 
-    const count = await prisma.idea.count({
-      where: {
-        ...filterOptions,
-        status: IdeaStatus.APPROVED,
-      },
-    });
+    const count = await prisma.idea.count({ where: filterOptions });
 
     return {
       meta: {
