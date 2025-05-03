@@ -32,6 +32,11 @@ IdeaRoutes.post(
   IdeaControllers.createAnIdea
 );
 
+IdeaRoutes.get(
+  '/getOwnIdeas',
+  auth(Role.MEMBER),
+  IdeaControllers.getOwnAllIdeas
+);
 IdeaRoutes.get('/', IdeaControllers.getAllIdeas);
 
 IdeaRoutes.get('/:id', IdeaControllers.getSingleIdea);

@@ -32,6 +32,7 @@ const loginUserIntoDB = async (payload: {
 
   const accessToken = generateToken(
     {
+      id:userData.id,
       email: userData.email,
       role: userData.role,
       image: userData?.image || defaultUserImage,
@@ -43,6 +44,7 @@ const loginUserIntoDB = async (payload: {
 
   const refreshToken = generateToken(
     {
+      id: userData.id,
       email: userData.email,
       role: userData.role,
       image: userData?.image || defaultUserImage,
@@ -51,7 +53,7 @@ const loginUserIntoDB = async (payload: {
     config.jwt.refresh_secret as string,
     config.jwt.jwt_refresh_expiration as string
   );
-  
+
   return {
     accessToken,
     refreshToken,
@@ -75,6 +77,7 @@ const refreshToken = async (token: string) => {
 
   const accessToken = generateToken(
     {
+      id: userData.id,
       email: userData.email,
       role: userData.role,
       image: userData?.image || defaultUserImage,
