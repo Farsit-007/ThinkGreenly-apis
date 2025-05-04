@@ -8,7 +8,7 @@ let server: Server;
 async function main() {
   try {
     server = app.listen(config.port, () => {
-      console.log('Sever is running on port ', config.port);
+      console.log('Server is running on port ', config.port);
     });
   } catch (error) {
     console.log('Server Error', error);
