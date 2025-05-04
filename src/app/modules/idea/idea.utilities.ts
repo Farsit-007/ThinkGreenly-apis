@@ -1,4 +1,4 @@
-import { IdeaStatus, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { TIdeaFilterParams } from './idea.types';
 import { ideaSearchableFields } from './idea.constants';
 
@@ -71,7 +71,7 @@ export const ideaFilters = (
     });
   }
 
-  andConditions.push({ isDeleted: false }, { status: IdeaStatus.APPROVED });
+  andConditions.push({ isDeleted: false });
 
   const whereConditions: Prisma.IdeaWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};

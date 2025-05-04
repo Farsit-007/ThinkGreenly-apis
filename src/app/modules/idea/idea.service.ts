@@ -84,7 +84,7 @@ export class IdeaServices {
     const filterOptions = ideaFilters(params);
 
     const result = await prisma.idea.findMany({
-      where: filterOptions,
+      where: { ...filterOptions, status: IdeaStatus.APPROVED },
       skip,
       take: limit,
       orderBy:
