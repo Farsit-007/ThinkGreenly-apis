@@ -51,50 +51,29 @@ Want to test your own, please use this link
 3. Set up environment variables in a `.env` file:
 
    ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/sustainability_hub"
-   # Environment
-   NODE_ENV=development
-
-   # Port
+   NODE_ENV="development"
    PORT=5000
 
-   # Database URL
-   DB_URL=""
+   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/ThinkGreenly?schema=public"
 
-   # Bcrypt Salt Rounds
-   BCRYPT_SALT_ROUNDS=
+   JWT_SECRET=""
+   JWT_EXPIRATION="15d"
+   JWT_REFRESH=""
+   JWT_REFRESH_EXPIRATION="7d"
+   RESET_PASSWORD_SECRET=""
+   RESET_PASSWORD_EXPIRATION="10m"
+   RESET_PASSWORD_LINK="http://localhost:5000/auth/reset-password"
+   RESEND_API_KEY=""
 
-   # JWT Secrets and Expiry
-   JWT_ACCESS_SECRET=
-   JWT_ACCESS_EXPIRES_IN=
-   JWT_REFRESH_SECRET=
-   JWT_REFRESH_EXPIRES_IN=
-   JWT_OTP_SECRET=
-   JWT_PASS_RESET_SECRET=
-   JWT_PASS_RESET_EXPIRES_IN=
+   BCRYPT_SALT_ROUNDS=12
+   SMTP_HOST="smtp.gmail.com"
+   SMTP_PORT=587
+   SMTP_USER=""
 
-   # Cloudinary Credentials
-   CLOUDINARY_CLOUD_NAME=
+
+   CLOUDINARY_CLOUD_NAME=""
    CLOUDINARY_API_KEY=
-   CLOUDINARY_API_SECRET=
-
-   # Email Configuration
-   SENDER_EMAIL=""
-   SENDER_APP_PASS=""
-
-   # SSLCommerz Payment Info
-   STORE_NAME=""
-   PAYMENT_API=""
-   VALIDATION_API=""
-   STORE_ID=""
-   STORE_PASSWORD=""
-   VALIDATION_URL="http://localhost:5000/api/v1/ssl/validate"
-   SUCCESS_URL="http://localhost:3000/success"
-   FAILED_URL="http://localhost:3000/failed"
-   CANCEL_URL="http://localhost:3000"
-
-   FRONTEND_LINK="http://localhost:3000"
-   BACKEND_LINK="http://localhost:5000"
+   CLOUDINARY_API_SECRET=""
    ```
 
 4. Set up database
