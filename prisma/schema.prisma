@@ -62,14 +62,14 @@ model Idea {
 }
 
 model Vote {
-  id     String   @id @default(uuid())
-  userId String
-  ideaId String
-  type   VoteType
-  user   User     @relation(fields: [userId], references: [id])
-  idea   Idea     @relation(fields: [ideaId], references: [id])
+  id        String   @id @default(uuid())
+  userEmail String
+  ideaId    String
+  type      VoteType
+  user      User     @relation(fields: [userEmail], references: [email])
+  idea      Idea     @relation(fields: [ideaId], references: [id])
 
-  @@unique([userId, ideaId]) // One vote per user per idea
+  @@unique([userEmail, ideaId]) // One vote per user per idea
   @@map("votes")
 }
 
