@@ -7,7 +7,7 @@ export type IVotePayload = {
 
 export type IVoteResponse = {
   id: string;
-  userId: string;
+  userEmail: string;
   ideaId: string;
   type: VoteType;
 };

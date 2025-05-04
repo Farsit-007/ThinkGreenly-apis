@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { VoteType } from "@prisma/client";
-import prisma from "../../config/prisma";
-import { IVotePayload, IVoteResponse, IVoteStats } from "./vote.interface";
-import NotFound from "../../errors/NotFound";
-import NotAcceptable from "../../errors/NotAcceptable";
-import { TIdeaFilterParams } from "../idea/idea.types";
-import { PaginationHelper } from "../../builder/paginationHelper";
-import { ideaFilters } from "../idea/idea.utilities";
+import { VoteType } from '@prisma/client';
+import prisma from '../../config/prisma';
+import { IVotePayload, IVoteResponse, IVoteStats } from './vote.interface';
+import NotFound from '../../errors/NotFound';
+import NotAcceptable from '../../errors/NotAcceptable';
+import { TIdeaFilterParams } from '../idea/idea.types';
+import { PaginationHelper } from '../../builder/paginationHelper';
+import { ideaFilters } from '../idea/idea.utilities';
 
-
-const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promise<IVoteResponse> => {
+const createOrUpdateVote = async (
+  userEmail: string,
+  payload: IVotePayload
+): Promise<IVoteResponse> => {
   const { ideaId, type } = payload;
 
   // Check if idea exists and is approved
@@ -18,16 +20,16 @@ const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promis
   });
 
   if (!idea) {
-    throw new NotFound("Idea not found");
+    throw new NotFound('Idea not found');
   }
 
-  if (idea.status !== "APPROVED") {
-    throw new NotAcceptable("Cannot vote on ideas that are not approved");
+  if (idea.status !== 'APPROVED') {
+    throw new NotAcceptable('Cannot vote on ideas that are not approved');
   }
   const existingVote = await prisma.vote.findUnique({
     where: {
-      userId_ideaId: {
-        userId,
+      userEmail_ideaId: {
+        userEmail,
         ideaId,
       },
     },
@@ -37,8 +39,8 @@ const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promis
     if (existingVote.type !== type) {
       const updatedVote = await prisma.vote.update({
         where: {
-          userId_ideaId: {
-            userId,
+          userEmail_ideaId: {
+            userEmail,
             ideaId,
           },
         },
@@ -51,7 +53,7 @@ const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promis
   // Create new vote
   const newVote = await prisma.vote.create({
     data: {
-      userId,
+      userEmail,
       ideaId,
       type,
     },
@@ -59,39 +61,37 @@ const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promis
   return newVote;
 };
 
-
-const removeVote = async (userId: string, ideaId: string): Promise<void> => {
+const removeVote = async (userEmail: string, ideaId: string): Promise<void> => {
   // Check if idea exists
   const idea = await prisma.idea.findUnique({
     where: { id: ideaId },
   });
   if (!idea) {
-    throw new NotFound("Idea not found");
+    throw new NotFound('Idea not found');
   }
   // Check if vote exists
   const vote = await prisma.vote.findUnique({
     where: {
-      userId_ideaId: {
-        userId,
+      userEmail_ideaId: {
+        userEmail,
         ideaId,
       },
     },
   });
 
   if (!vote) {
-    throw new NotFound("Vote not found");
+    throw new NotFound('Vote not found');
   }
   // Delete the vote
   await prisma.vote.delete({
     where: {
-      userId_ideaId: {
-        userId,
+      userEmail_ideaId: {
+        userEmail,
         ideaId,
       },
     },
   });
 };
-
 
 const getVoteStats = async (ideaId: string): Promise<IVoteStats> => {
   // Check if idea exists
@@ -99,7 +99,7 @@ const getVoteStats = async (ideaId: string): Promise<IVoteStats> => {
     where: { id: ideaId },
   });
   if (!idea) {
-    throw new NotFound("Idea not found");
+    throw new NotFound('Idea not found');
   }
   // Count upvotes and downvotes
   const [upvotesCount, downvotesCount] = await Promise.all([
@@ -123,22 +123,23 @@ const getVoteStats = async (ideaId: string): Promise<IVoteStats> => {
   };
 };
 
-
-const getUserVote = async (userId: string, ideaId: string): Promise<IVoteResponse | null> => {
+const getUserVote = async (
+  userEmail: string,
+  ideaId: string
+): Promise<IVoteResponse | null> => {
   const vote = await prisma.vote.findUnique({
     where: {
-      userId_ideaId: {
-        userId,
+      userEmail_ideaId: {
+        userEmail,
         ideaId,
       },
     },
   });
   if (!vote) {
-    throw new NotFound("Vote not found");
+    throw new NotFound('Vote not found');
   }
   return vote;
 };
-
 
 const getAllIdeasByVotes = async (
   params?: TIdeaFilterParams,
@@ -146,7 +147,7 @@ const getAllIdeasByVotes = async (
 ) => {
   const { limit, page, skip } = PaginationHelper.calculatePagination(options);
   const filterOptions = ideaFilters(params);
-  
+
   // Get all ideas that match the filter criteria
   const ideas = await prisma.idea.findMany({
     where: filterOptions,
@@ -180,14 +181,14 @@ const getAllIdeasByVotes = async (
           type: VoteType.UP,
         },
       });
-      
+
       const downvotes = await prisma.vote.count({
         where: {
           ideaId: idea.id,
           type: VoteType.DOWN,
         },
       });
-      
+
       return {
         ...idea,
         voteStats: {
@@ -202,8 +203,10 @@ const getAllIdeasByVotes = async (
   );
 
   // Sort by total votes in descending order
-  const sortedIdeas = ideasWithVotes.sort((a, b) => b.voteStats.total - a.voteStats.total);
-  
+  const sortedIdeas = ideasWithVotes.sort(
+    (a, b) => b.voteStats.total - a.voteStats.total
+  );
+
   // Apply pagination after sorting
   const paginatedResults = sortedIdeas.slice(skip, skip + limit);
   const totalCount = sortedIdeas.length;
@@ -219,11 +222,10 @@ const getAllIdeasByVotes = async (
   };
 };
 
-
 export const voteService = {
   createOrUpdateVote,
   removeVote,
   getUserVote,
   getVoteStats,
   getAllIdeasByVotes,
-}
+};
