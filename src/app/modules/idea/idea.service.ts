@@ -5,12 +5,14 @@ import prisma from '../../config/prisma';
 import { TIdeaFilterParams, TIdeaPayload } from './idea.types';
 import { ideaFilters } from './idea.utilities';
 import { JwtPayload } from 'jsonwebtoken';
+import { PaginationHelper } from '../../builder/paginationHelper';
 
 export class IdeaServices {
   // draftAnIdeaIntoDB
   static async draftAnIdeaIntoDB(userData: JwtPayload, payload: TIdeaPayload) {
     payload.price = payload.price ? Number(payload.price) : 0;
     payload.authorId = userData.id;
+    payload.isPaid = payload.price > 0;
 
     if (payload.id) {
       // Update a previously created draft (upsert)
@@ -38,6 +40,7 @@ export class IdeaServices {
     payload.price = Number(payload.price);
     payload.authorId = userData.id;
     payload.status = IdeaStatus.UNDER_REVIEW;
+    payload.isPaid = payload.price > 0;
 
     // const result = await prisma.idea.upsert({
     //   where: {
@@ -75,16 +78,17 @@ export class IdeaServices {
     params?: TIdeaFilterParams,
     options?: any
   ) => {
-    const { limit, page, skip } = options;
+    const { limit, page, skip, sortBy, sortOrder } =
+      PaginationHelper.calculatePagination(options);
+
     const filterOptions = ideaFilters(params);
+
     const result = await prisma.idea.findMany({
       where: filterOptions,
-      skip: page ? skip : undefined,
-      take: limit ? limit : undefined,
+      skip,
+      take: limit,
       orderBy:
-        options.sortBy && options.sortOrder
-          ? { [options.sortBy]: options.sortOrder }
-          : { createdAt: 'desc' },
+        sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' },
       include: {
         votes: true,
         author: true,
@@ -98,8 +102,48 @@ export class IdeaServices {
 
     return {
       meta: {
-        page: page || 1,
-        limit: limit || 10,
+        page: page,
+        limit: limit,
+        total: count,
+        totalPage: Math.ceil(count / limit),
+      },
+      data: result,
+    };
+  };
+
+  // get own ideas from DB
+  static getOwnAllIdeasFromDB = async (
+    params?: TIdeaFilterParams,
+    options?: any,
+    user?: JwtPayload
+  ) => {
+    const { limit, page, skip, sortBy, sortOrder } =
+      PaginationHelper.calculatePagination(options);
+    const filterOptions = ideaFilters(params);
+
+    const whereOptions = { authorId: user?.id, ...filterOptions };
+
+    const result = await prisma.idea.findMany({
+      where: whereOptions,
+      skip,
+      take: limit,
+      orderBy:
+        sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' },
+      include: {
+        votes: true,
+        author: true,
+        category: true,
+        comments: true,
+        payments: true,
+      },
+    });
+
+    const count = await prisma.idea.count({ where: whereOptions });
+
+    return {
+      meta: {
+        page: page,
+        limit: limit,
         total: count,
         totalPage: Math.ceil(count / limit),
       },
@@ -113,8 +157,10 @@ export class IdeaServices {
       where: { id, isDeleted: false },
       include: {
         votes: true,
+        author: true,
         category: true,
         comments: true,
+        payments: true,
       },
     });
 

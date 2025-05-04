@@ -4,6 +4,8 @@ import { IUser } from './user.interface';
 import { Role, User } from '@prisma/client';
 import { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
+import { generateToken } from '../../utils/jwtHelper';
+import { defaultUserImage } from '../../constants/global.constants';
 
 // createUserIntoDB
 const createUserIntoDB = async (payload: IUser) => {
@@ -92,12 +94,38 @@ const getSingleUserFromDB = async (id: string): Promise<User | null> => {
 const updateProfile = async (
   id: string,
   payload: Partial<IUser>
-): Promise<User | null> => {
-  const result = await prisma.user.update({
+): Promise<{ accessToken: string; refreshToken: string }> => {
+  const user = await prisma.user.update({
     where: { id, isActive: true },
     data: payload,
   });
-  return result;
+
+  const accessToken = generateToken(
+    {
+      email: user.email,
+      role: user.role,
+      image: user?.image || defaultUserImage,
+      name: user.name,
+    },
+    config.jwt.jwt_secret as string,
+    config.jwt.jwt_expiration as string
+  );
+
+  const refreshToken = generateToken(
+    {
+      email: user.email,
+      role: user.role,
+      image: user?.image || defaultUserImage,
+      name: user.name,
+    },
+    config.jwt.refresh_secret as string,
+    config.jwt.jwt_refresh_expiration as string
+  );
+
+  return {
+    accessToken,
+    refreshToken,
+  };
 };
 
 export const userServices = {

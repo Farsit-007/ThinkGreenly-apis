@@ -4,9 +4,10 @@ import prisma from '../../config/prisma';
 import AppError from '../../errors/AppError';
 import { httpStatus } from '../../utils/httpStatus';
 import bcrypt from 'bcrypt';
-import { generateToken, verifyToken } from '../../utils/jwtHalper';
+import { generateToken, verifyToken } from '../../utils/jwtHelper';
 import { JwtPayload, Secret } from 'jsonwebtoken';
 import { sendEmail } from '../../utils/sendEmail';
+import { defaultUserImage } from '../../constants/global.constants';
 
 // loginUserIntoDB
 const loginUserIntoDB = async (payload: {
@@ -33,18 +34,24 @@ const loginUserIntoDB = async (payload: {
     {
       email: userData.email,
       role: userData.role,
+      image: userData?.image || defaultUserImage,
+      name: userData.name,
     },
     config.jwt.jwt_secret as string,
     config.jwt.jwt_expiration as string
   );
+
   const refreshToken = generateToken(
     {
       email: userData.email,
       role: userData.role,
+      image: userData?.image || defaultUserImage,
+      name: userData.name,
     },
     config.jwt.refresh_secret as string,
     config.jwt.jwt_refresh_expiration as string
   );
+
   return {
     accessToken,
     refreshToken,
@@ -70,6 +77,8 @@ const refreshToken = async (token: string) => {
     {
       email: userData.email,
       role: userData.role,
+      image: userData?.image || defaultUserImage,
+      name: userData.name,
     },
     config.jwt.jwt_secret as string,
     config.jwt.jwt_expiration as string
@@ -133,10 +142,16 @@ const forgetPassword = async (payload: { email: string }) => {
   });
 
   const resetPasswordToken = generateToken(
-    { email: userData.email, role: userData.role },
+    {
+      email: userData.email,
+      role: userData.role,
+      image: userData?.image || defaultUserImage,
+      name: userData.name,
+    },
     config.password.reset_password_secret!,
     config.password.reset_password_expiration!
   );
+
   const resetPasswordLink =
     config.password.reset_password_link +
     `?id=${userData.id}&token=${resetPasswordToken}`;

@@ -26,6 +26,7 @@ const getAllUsersFromDB = async (query: Record<string, unknown>) => {
     skip,
     take: limit,
     orderBy: { [sortBy]: sortOrder },
+    include: {votes:true,payments:true,comments: true,ideas: true}
   });
 
   const count = await prisma.user.count({
@@ -77,7 +78,7 @@ const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
   } else {
     statusFilter = {
       status: {
-        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED,IdeaStatus.REJECTED],
+        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED, IdeaStatus.REJECTED],
       },
     };
   }
@@ -94,6 +95,10 @@ const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
     skip,
     take: limit,
     orderBy: { [sortBy]: sortOrder },
+    include: {
+      category: true,
+      author: true,
+    },
   });
 
   const count = await prisma.idea.count({
@@ -138,25 +143,26 @@ const getAllIdeasFromDB = async (query: Record<string, unknown>) => {
 };
 
 // updateIdeaStatusIntoDB
-const updateIdeaStatusIntoDB = async (id: string, status:Partial<Idea>) => {
+const updateIdeaStatusIntoDB = async (id: string, status: Partial<Idea>) => {
   const result = await prisma.idea.update({
     where: {
       id,
-      isDeleted:false
+      isDeleted: false,
     },
-    data: {...status },
-    
+    data: { ...status },
   });
   return result;
 };
 // updateUserActiveStatus
-const updateUserActiveStatus = async (id: string, status:{isActive:boolean}) => {
+const updateUserActiveStatus = async (
+  id: string,
+  status: { isActive: boolean }
+) => {
   const result = await prisma.user.update({
     where: {
-      id
+      id,
     },
-    data: {isActive:status.isActive || false },
-    
+    data: { isActive: status.isActive || false },
   });
   return result;
 };
@@ -165,5 +171,5 @@ export const AdminService = {
   getAllUsersFromDB,
   getAllIdeasFromDB,
   updateIdeaStatusIntoDB,
-  updateUserActiveStatus
+  updateUserActiveStatus,
 };

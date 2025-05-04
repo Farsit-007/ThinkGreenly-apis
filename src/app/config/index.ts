@@ -42,4 +42,8 @@ export default {
     fail_url: process.env.FAIL_URL,
     cancel_url: process.env.CANCEL_URL,
   },
+
+  cloudinary_cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
+  cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
 };

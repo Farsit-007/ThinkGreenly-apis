@@ -13,6 +13,7 @@ router.post(
   validateRequest(userValidation.createUserSchema),
   userControllers.createUser
 );
+
 router.patch(
   '/:id/profile',
   uploadFile.single('image'),
@@ -29,7 +30,9 @@ router.patch(
   validateRequest(userValidation.updateUserStatusSchema),
   userControllers.changeUserStatus
 );
+
 router.get('/me', auth(Role.ADMIN, Role.MEMBER), userControllers.getMyProfile);
+
 router.get('/:id', auth(Role.ADMIN), userControllers.getSingleUser);
 
 export const userRoutes = router;

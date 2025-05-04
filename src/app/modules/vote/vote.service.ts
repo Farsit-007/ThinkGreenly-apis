@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VoteType } from "@prisma/client";
 import prisma from "../../config/prisma";
 import { IVotePayload, IVoteResponse, IVoteStats } from "./vote.interface";
 import NotFound from "../../errors/NotFound";
 import NotAcceptable from "../../errors/NotAcceptable";
+import { TIdeaFilterParams } from "../idea/idea.types";
+import { PaginationHelper } from "../../builder/paginationHelper";
+import { ideaFilters } from "../idea/idea.utilities";
 
 
 const createOrUpdateVote = async (userId: string, payload: IVotePayload): Promise<IVoteResponse> => {
@@ -136,9 +140,90 @@ const getUserVote = async (userId: string, ideaId: string): Promise<IVoteRespons
 };
 
 
+const getAllIdeasByVotes = async (
+  params?: TIdeaFilterParams,
+  options?: any
+) => {
+  const { limit, page, skip } = PaginationHelper.calculatePagination(options);
+  const filterOptions = ideaFilters(params);
+  
+  // Get all ideas that match the filter criteria
+  const ideas = await prisma.idea.findMany({
+    where: filterOptions,
+    include: {
+      author: true,
+      category: true,
+      comments: {
+        select: {
+          id: true,
+        },
+      },
+      payments: true,
+      _count: {
+        select: {
+          votes: {
+            where: {
+              type: VoteType.UP,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // For each idea, get the vote counts
+  const ideasWithVotes = await Promise.all(
+    ideas.map(async (idea) => {
+      const upvotes = await prisma.vote.count({
+        where: {
+          ideaId: idea.id,
+          type: VoteType.UP,
+        },
+      });
+      
+      const downvotes = await prisma.vote.count({
+        where: {
+          ideaId: idea.id,
+          type: VoteType.DOWN,
+        },
+      });
+      
+      return {
+        ...idea,
+        voteStats: {
+          upvotes,
+          downvotes,
+          total: upvotes - downvotes,
+        },
+        // Adjust the structure to match your frontend expectations
+        comments: idea.comments.length,
+      };
+    })
+  );
+
+  // Sort by total votes in descending order
+  const sortedIdeas = ideasWithVotes.sort((a, b) => b.voteStats.total - a.voteStats.total);
+  
+  // Apply pagination after sorting
+  const paginatedResults = sortedIdeas.slice(skip, skip + limit);
+  const totalCount = sortedIdeas.length;
+
+  return {
+    meta: {
+      page: page,
+      limit: limit,
+      total: totalCount,
+      totalPage: Math.ceil(totalCount / (limit || 10)),
+    },
+    data: paginatedResults,
+  };
+};
+
+
 export const voteService = {
   createOrUpdateVote,
   removeVote,
   getUserVote,
-  getVoteStats
+  getVoteStats,
+  getAllIdeasByVotes,
 }

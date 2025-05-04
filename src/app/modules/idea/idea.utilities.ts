@@ -1,51 +1,80 @@
-import { Prisma } from '@prisma/client';
+import { IdeaStatus, Prisma } from '@prisma/client';
 import { TIdeaFilterParams } from './idea.types';
-import { searchFields } from './idea.constants';
+import { ideaSearchableFields } from './idea.constants';
 
 export const ideaFilters = (
   params?: TIdeaFilterParams
 ): Prisma.IdeaWhereInput | undefined => {
   if (!params) return undefined;
-  const { searchTerm, ...exactFilters } = params;
 
-  const where: Prisma.IdeaWhereInput = {};
-
-  if (searchTerm) {
-    where.OR = searchFields.map((field) => ({
-      [field]: {
-        contains: searchTerm,
-        mode: 'insensitive',
-      },
-    }));
-  }
+  const { searchTerm, minPrice, maxPrice, ...restFilters } = params;
 
   const andConditions: Prisma.IdeaWhereInput[] = [];
 
-  for (const key in exactFilters) {
-    const value = exactFilters[key];
-    if (value !== undefined && value !== '') {
-      andConditions.push({ [key]: value });
-    }
+  // handle all searchTerm here by OR condition
+  if (searchTerm) {
+    andConditions.push({
+      OR: ideaSearchableFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
   }
 
-  for (const key in exactFilters) {
-    const value = exactFilters[key];
-    if (value !== undefined && value !== '') {
-      if (typeof exactFilters.isPaid === 'string') {
-        if (exactFilters.isPaid === 'true') {
-          exactFilters.isPaid = true;
-        }
-        if (exactFilters.isPaid === 'false') {
-          exactFilters.isPaid = false;
-        }
-      }
-      andConditions.push({ [key]: value });
-    }
+  // handle minPricee here by AND condition
+  if (minPrice) {
+    andConditions.push({
+      AND: [
+        {
+          price: {
+            gte: minPrice,
+          },
+        },
+      ],
+    });
+  }
+  // handle maxPrice here by AND condition
+  if (maxPrice) {
+    andConditions.push({
+      AND: [
+        {
+          price: {
+            lte: maxPrice,
+          },
+        },
+      ],
+    });
   }
 
-    andConditions.push({ isDeleted: false });
-  if (andConditions.length) {
-    where.AND = andConditions;
+  // handle all restFilters here by AND condition
+  if (Object.keys(restFilters).length > 0) {
+    if (
+      typeof restFilters.isPaid === 'string' &&
+      restFilters.isPaid === 'true'
+    ) {
+      restFilters.isPaid = true;
+    } else if (
+      typeof restFilters.isPaid === 'string' &&
+      restFilters.isPaid === 'false'
+    ) {
+      restFilters.isPaid = false;
+    }
+
+    andConditions.push({
+      AND: Object.keys(restFilters).map((key) => {
+        return {
+          [key]: { equals: restFilters[key as keyof typeof restFilters] },
+        };
+      }),
+    });
   }
-  return where;
+
+  andConditions.push({ isDeleted: false }, { status: IdeaStatus.APPROVED });
+
+  const whereConditions: Prisma.IdeaWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  return whereConditions;
 };

@@ -44,23 +44,32 @@ const updateProfile = catchAsync(async (req, res) => {
   const payload = req.body;
 
   if (req.file) {
-    const { secure_url } = await sendImageToCloudinary(
-      req.file.filename,
-      req.file.buffer
-    );
+    const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e3);
+    const imageName = `${uniqueSuffix}-${req.user?.email.split('@')[0]}`;
+    const path = req.file?.buffer;
+
+    const { secure_url } = await sendImageToCloudinary(imageName, path);
+
     payload.image = secure_url;
-  } 
-  else {
+  } else {
     const existingUser = await userServices.getSingleUserFromDB(req.params.id);
     if (existingUser) {
       payload.image = existingUser.image;
     }
   }
-  const result = await userServices.updateProfile(req.params.id, payload);
+
+  const { accessToken, refreshToken } = await userServices.updateProfile(
+    req.params.id,
+    payload
+  );
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: 'Profile updated successfully',
-    data: result,
+    data: {
+      accessToken,
+      refreshToken,
+    },
   });
 });
 
