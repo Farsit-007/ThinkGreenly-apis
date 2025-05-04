@@ -15,7 +15,7 @@ router.post(
 );
 
 router.patch(
-  '/:id/profile',
+  '/profile',
   uploadFile.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
