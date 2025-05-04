@@ -74,8 +74,8 @@ const getPaymentDetails = catchAsync(async (req: Request, res: Response) => {
 
 // validate Payment
 const validatePayment = catchAsync(async (req: Request, res: Response) => {
-  const tran_id = req.query.tran_id as string;
-  const result = await paymentService.validatePayment(tran_id, req.user);
+  const transactionId = req.query.tran_id as string;
+  const result = await paymentService.validatePayment(transactionId, req.user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
