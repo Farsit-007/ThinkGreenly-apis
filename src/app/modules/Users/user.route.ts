@@ -16,6 +16,7 @@ router.post(
 
 router.patch(
   '/profile',
+  auth(Role.ADMIN, Role.MEMBER),
   uploadFile.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);

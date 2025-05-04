@@ -41,9 +41,10 @@ const getSingleUser = catchAsync(async (req, res) => {
 });
 
 const updateProfile = catchAsync(async (req, res) => {
+
   const payload = req.body;
 
-  if (req.file) {
+  if (req?.file) {
     const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e3);
     const imageName = `${uniqueSuffix}-${req.user?.email.split('@')[0]}`;
     const path = req.file?.buffer;
@@ -52,7 +53,7 @@ const updateProfile = catchAsync(async (req, res) => {
 
     payload.image = secure_url;
   } else {
-    const existingUser = await userServices.getSingleUserFromDB(req.params.id);
+    const existingUser = await userServices.getSingleUserFromDB(req.user.id);
     if (existingUser) {
       payload.image = existingUser.image;
     }
