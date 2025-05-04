@@ -210,8 +210,8 @@ const getAllIdeasByVotes = async (
 
   return {
     meta: {
-      page: page || 1,
-      limit: limit || 10,
+      page: page,
+      limit: limit,
       total: totalCount,
       totalPage: Math.ceil(totalCount / (limit || 10)),
     },

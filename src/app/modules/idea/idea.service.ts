@@ -80,9 +80,9 @@ export class IdeaServices {
   ) => {
     const { limit, page, skip, sortBy, sortOrder } =
       PaginationHelper.calculatePagination(options);
-    
+
     const filterOptions = ideaFilters(params);
-    
+
     const result = await prisma.idea.findMany({
       where: filterOptions,
       skip,
@@ -127,7 +127,8 @@ export class IdeaServices {
       where: whereOptions,
       skip,
       take: limit,
-      orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' },
+      orderBy:
+        sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' },
       include: {
         votes: true,
         author: true,
@@ -141,8 +142,8 @@ export class IdeaServices {
 
     return {
       meta: {
-        page: page || 1,
-        limit: limit || 10,
+        page: page,
+        limit: limit,
         total: count,
         totalPage: Math.ceil(count / limit),
       },
@@ -154,6 +155,13 @@ export class IdeaServices {
   static getSingleIdeaFromDB = async (id: string): Promise<Idea | null> => {
     const result = await prisma.idea.findUnique({
       where: { id, isDeleted: false },
+      include: {
+        votes: true,
+        author: true,
+        category: true,
+        comments: true,
+        payments: true,
+      },
     });
 
     return result;
