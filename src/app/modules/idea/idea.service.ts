@@ -111,6 +111,11 @@ export class IdeaServices {
   static getSingleIdeaFromDB = async (id: string): Promise<Idea | null> => {
     const result = await prisma.idea.findUnique({
       where: { id, isDeleted: false },
+      include: {
+        votes: true,
+        category: true,
+        comments: true,
+      },
     });
 
     return result;
