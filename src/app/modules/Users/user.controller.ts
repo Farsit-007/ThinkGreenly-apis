@@ -41,9 +41,7 @@ const getSingleUser = catchAsync(async (req, res) => {
 });
 
 const updateProfile = catchAsync(async (req, res) => {
-
   const payload = req.body;
-
   if (req?.file) {
     const uniqueSuffix = Date.now() + Math.round(Math.random() * 1e3);
     const imageName = `${uniqueSuffix}-${req.user?.email.split('@')[0]}`;
