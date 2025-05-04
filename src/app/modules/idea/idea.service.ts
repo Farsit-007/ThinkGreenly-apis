@@ -98,7 +98,9 @@ export class IdeaServices {
       },
     });
 
-    const count = await prisma.idea.count({ where: filterOptions });
+    const count = await prisma.idea.count({
+      where: { ...filterOptions, status: IdeaStatus.APPROVED },
+    });
 
     return {
       meta: {
