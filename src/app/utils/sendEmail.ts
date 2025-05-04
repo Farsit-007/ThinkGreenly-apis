@@ -1,26 +1,25 @@
-
-import nodemailer from "nodemailer";
-import config from "../config";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
+import nodemailer from 'nodemailer';
+import config from '../config';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 const transporter = nodemailer.createTransport({
   host: config.smtp.host,
-  port: config.smtp.port,
+  port: Number(config.smtp.port),
   secure: false,
   auth: {
     user: config.smtp.user,
-    pass: config.smtp.password
+    pass: config.smtp.password,
   },
-  tls :{
-    rejectUnauthorized : false
-  }
+  tls: {
+    rejectUnauthorized: false,
+  },
 } as SMTPTransport.Options);
 
-export const sendEmail = async (email : string,html : string) => {
+export const sendEmail = async (email: string, html: string) => {
   await transporter.sendMail({
-    from: `Think Greenly <${config.smtp.user}>`,
+    from: `ThinkGreenly <${config.smtp.user}>`,
     to: email,
-    subject: "Reset Your Think Greenly Password",
+    subject: 'Reset Your Think Greenly Password!',
     html: html,
   });
 };
