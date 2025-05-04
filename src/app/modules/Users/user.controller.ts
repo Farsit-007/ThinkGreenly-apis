@@ -59,7 +59,7 @@ const updateProfile = catchAsync(async (req, res) => {
   }
 
   const { accessToken, refreshToken } = await userServices.updateProfile(
-    req.params.id,
+    req.user.id,
     payload
   );
 
