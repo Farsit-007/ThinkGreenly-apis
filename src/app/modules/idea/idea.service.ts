@@ -159,7 +159,14 @@ export class IdeaServices {
         votes: true,
         author: true,
         category: true,
-        comments: true,
+        comments: {
+          include: {
+            idea: true,
+            user: true,
+            parent: true,
+            replies: true,
+          },
+        },
         payments: true,
       },
     });
