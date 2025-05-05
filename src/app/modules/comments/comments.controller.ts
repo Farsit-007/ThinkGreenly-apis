@@ -21,9 +21,9 @@ const createComments = catchAsync(async (req, res) => {
   });
 });
 
-const getAllComments = catchAsync(async (req, res) => {
-  const { ideaId } = req.params;
-  const result = await commentService.getAllCommentFromDB(ideaId);
+const getCommentsByIdeaId = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await commentService.getCommentByIdeaIdFromDB(id);
 
   if (!req.user) {
     throw new AppError(
@@ -53,6 +53,6 @@ const deleteComments = catchAsync(async (req, res) => {
 
 export const commentController = {
   createComments,
-  getAllComments,
+  getCommentsByIdeaId,
   deleteComments,
 };

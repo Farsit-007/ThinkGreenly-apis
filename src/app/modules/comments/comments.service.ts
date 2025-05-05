@@ -24,25 +24,37 @@ const createCommentsIntoDB = async (payload: Partial<Comment>,user:JwtPayload) =
   return result;
 };
 
-const getAllCommentFromDB = async (ideaId: string) => {
+const getCommentByIdeaIdFromDB = async (ideaId: string) => {
   const comments = await prisma.comment.findMany({
     where: {
-      ideaId,
-      parentId: null,
+      ideaId: ideaId,
+      parentId: null, // Only top-level comments
     },
     include: {
       user: true,
       replies: {
         include: {
           user: true,
-          replies: true,
+          replies: {
+            include: {
+              user: true,
+              replies: {
+                include: {
+                  user: true,
+                },
+              },
+            },
+          },
         },
       },
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy: {
+      createdAt: 'asc',
+    },
   });
   return comments;
 };
+
 
 const deleteCommentFromDB = async (id: string,user:JwtPayload) => {
   const userId=user.id;
@@ -54,6 +66,6 @@ const deleteCommentFromDB = async (id: string,user:JwtPayload) => {
 
 export const commentService = {
   createCommentsIntoDB,
-  getAllCommentFromDB,
+  getCommentByIdeaIdFromDB,
   deleteCommentFromDB,
 };
