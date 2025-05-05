@@ -155,27 +155,50 @@ export class IdeaServices {
 
   // getSingleIdeaFromDB
   static getSingleIdeaFromDB = async (id: string): Promise<Idea | null> => {
-    const result = await prisma.idea.findUnique({
-      where: { id, isDeleted: false },
+   
+    const idea = await prisma.idea.findUnique({
+      where: { id },
       include: {
-        votes: true,
         author: true,
         category: true,
-        comments: {
+        votes: {
           include: {
-            idea: true,
-            user: true,
-            parent: true,
-            replies: true,
+            user: true, // Only include this if your Vote model has a relation to User
           },
         },
         payments: true,
+        comments: {
+          where: {
+            parentId: null, // Only top-level comments
+          },
+          include: {
+            user: true,
+            replies: {
+              include: {
+                user: true,
+                replies: {
+                  include: {
+                    user: true,
+                    replies: {
+                      include: {
+                        user: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        },
       },
     });
-
-    return result;
+  
+    return idea;
   };
-
+  
   // updateIdeaFromDB
   static updateIdeaFromDB = async (
     id: string,

@@ -7,7 +7,7 @@ const CommentsRoutes = Router();
 
 CommentsRoutes.post('/',auth(Role.MEMBER), commentController.createComments);
 
-CommentsRoutes.get('/',auth(Role.MEMBER), commentController.getAllComments);
+CommentsRoutes.get('/:id',auth(Role.MEMBER,Role.ADMIN), commentController.getCommentsByIdeaId);
 
 CommentsRoutes.delete('/:id',auth( Role.ADMIN), commentController.deleteComments);
 
