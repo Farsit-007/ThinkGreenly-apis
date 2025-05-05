@@ -49,10 +49,21 @@ const updateUserActiveStatus = catchAsync(async (req, res) => {
     data: result,
   });
 });
+ 
+// delete idea 
+const deleteAnIdeaFromDB = catchAsync(async (req, res) => {
+  await AdminService.deleteAnIdeaFromDB(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Idea deleted successfully',
+    data: null,
+  });
+});
 
 export const AdminController = {
   getAllUsers,
   getAllIdeas,
   updateIdeaStatus,
-  updateUserActiveStatus
+  updateUserActiveStatus,
+  deleteAnIdeaFromDB
 };
