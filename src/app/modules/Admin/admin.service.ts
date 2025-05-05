@@ -167,9 +167,20 @@ const updateUserActiveStatus = async (
   return result;
 };
 
+  // deleteAnIdeaFromDB
+  const deleteAnIdeaFromDB = async (id: string) => {
+    const result = await prisma.idea.update({
+      where: { id, isDeleted: false }, 
+      data: { isDeleted: true },
+    });
+
+    return result;
+  };
+
 export const AdminService = {
   getAllUsersFromDB,
   getAllIdeasFromDB,
   updateIdeaStatusIntoDB,
   updateUserActiveStatus,
+  deleteAnIdeaFromDB
 };
