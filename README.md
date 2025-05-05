@@ -1,24 +1,31 @@
-# 🌱 Sustainability Idea Hub (Backend)
+# 🌱 ThinkGreenly (Backend)
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/your-repo/backend/ci.yml)](https://github.com/khaledssbd/ThinkGreenly-apis/actions)
-[![Coverage](https://coveralls.io/repos/github/your-repo/backend/badge.svg)](https://coveralls.io/github/khaledssbd/ThinkGreenly-apis)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+<!-- [![Build Status](https://img.shields.io/github/actions/workflow/status/your-repo/backend/ci.yml)](https://github.com/khaledssbd/ThinkGreenly-apis/actions)
+[![Coverage](https://coveralls.io/repos/github/your-repo/backend/badge.svg)](https://coveralls.io/github/khaledssbd/ThinkGreenly-apis) -->
 
 # 📌 Overview
 
-RESTful API for the Sustainability Idea Hub, built with Node.js, Express, and PostgreSQL. Handles authentication, idea moderation, and payments.
+RESTful API for the ThinkGreenly, built with Node.js, Express, and PostgreSQL. Handles authentication, idea moderation, and payments.
 
 ## 🌍 Live URL
 
-Want to test your own, please use this link
-[Live Deployment](https://think-greenly-serverside.vercel.app/)
+- [Front-end](https://think-greenly-one.vercel.app)
+- [Back-end](https://think-greenly-serverside.vercel.app)
+
+## 📂 Repository Link
+
+- [Front-end](https://github.com/khaledssbd/ThinkGreenly)
+- [Back-end](https://github.com/khaledssbd/ThinkGreenly-apis)
 
 ## 🛠️ Features
 
+- **Database**: PostgreSQL with Prisma ORM.
 - **JWT Authentication**: Secure member/admin login.
 - **CRUD Operations**: Manage ideas, comments, and votes.
 - **Admin Endpoints**: Approve/reject ideas with feedback.
-- **Payment API**: Integrates SSLCommerz/ShurjoPay.
-- **Database**: PostgreSQL with Prisma ORM.
 
 ## 🏗️ Tech Stack
 
@@ -26,6 +33,7 @@ Want to test your own, please use this link
 - **Framework**: Express.js
 - **Database**: PostgreSQL
 - **ORM**: Prisma
+- **Payment API**: SSLCommerz.
 - **Auth**: JWT, bcrypt
 
 ## 🏃‍♂️ Getting Started
@@ -33,14 +41,14 @@ Want to test your own, please use this link
 ### Prerequisites
 
 - Node.js ≥18.x
-- PostgreSQL ≥15.x
+- PostgreSQL ≥16.x
 
 ### Installation
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/khaledssbd/ThinkGreenly-apis.git sustainability-hub-backend
-   cd sustainability-hub-backend
+   git clone https://github.com/khaledssbd/ThinkGreenly-apis.git
+   cd ThinkGreenly-apis
    ```
 2. Install dependencies
 
@@ -165,27 +173,35 @@ Want to test your own, please use this link
 ✅️ GET   /api/v1/votes/stats            Get Upvote/Downvote Stats
 ```
 
-## How to Contribute
+## 👥 Contributors
 
-1. Fork the repository.
+<a href="https://github.com/mdrakibmia99">
+  <img src="https://avatars.githubusercontent.com/mdrakibmia99" width="40" style="border-radius: 50%;" />
+</a>
+<a href="https://github.com/Md-Rashedul-Islam-Rajib">
+  <img src="https://avatars.githubusercontent.com/Md-Rashedul-Islam-Rajib" width="40" style="border-radius: 50%;" />
+</a>
+<a href="https://github.com/khaledssbd">
+  <img src="https://avatars.githubusercontent.com/khaledssbd" width="40" style="border-radius: 50%;" />
+</a>
+<a href="https://github.com/krHasan">
+  <img src="https://avatars.githubusercontent.com/krHasan" width="40" style="border-radius: 50%;" />
+</a>
+<a href="https://github.com/Rakesh01999">
+  <img src="https://avatars.githubusercontent.com/Rakesh01999" width="40" style="border-radius: 50%;" />
+</a>
+<a href="https://github.com/Farsit-007">
+  <img src="https://avatars.githubusercontent.com/Farsit-007" width="40" style="border-radius: 50%;" />
+</a>
+<a href="https://github.com/Rahib38">
+  <img src="https://avatars.githubusercontent.com/Rahib38" width="40" style="border-radius: 50%;" />
+</a><a href="https://github.com/al-af-muktadir">
+  <img src="https://avatars.githubusercontent.com/al-af-muktadir" width="40" style="border-radius: 50%;" />
+</a>
 
-2. Create a branch:
+---
 
-   ```
-   bash
-   git checkout -b fix/your-fix
-
-   ```
-
-3. Test changes:
-
-   ```
-   bash
-   npm test
-
-   ```
-
-4. Push to your fork and open a Pull Request.
+![alt text](think-greenly-one.vercel.app_.png)
 
 ## License
 

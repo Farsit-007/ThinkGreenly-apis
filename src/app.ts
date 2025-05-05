@@ -36,13 +36,14 @@ app.get('/', (req: Request, res: Response) => {
     },
     developerContact: {
       email: [
-        'rajib5570@gmail.com',
-        'rkrakibhasan680@gmail.com',
         'khaledssbd@gmail.com',
-        'nadimulrahib38@gmail.com',
-        'robayatfarsit@gmail.com',
-        'rbiswas01999@gmail.com',
+        'rkrakibhasan680@gmail.com',
+        'rajib5570@gmail.com',
+        'izemidas@gmail.com',
         'hasanbappi@gmail.com',
+        'rbiswas01999@gmail.com',
+        'robayatfarsit@gmail.com',
+        'nadimulrahib38@gmail.com',
       ],
     },
   });
