@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { userControllers } from './user.controller';
 import validateRequest from '../../middlewares/validateRequest';
 import { userValidation } from './user.validation';
@@ -6,7 +6,7 @@ import { auth } from '../../middlewares/auth';
 import { Role } from '@prisma/client';
 import { uploadFile } from '../../utils/cloudinaryImageUploader';
 
-const router = express.Router();
+const router = Router();
 
 router.post(
   '/',
