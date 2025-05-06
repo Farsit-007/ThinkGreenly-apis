@@ -89,12 +89,12 @@ const refreshToken = async (token: string) => {
   };
 };
 
-// changedPassword
-const changedPassword = async (
+// changePasswordIntoDB
+const changePasswordIntoDB = async (
   user: JwtPayload,
   payload: { oldPassword: string; newPassword: string }
 ) => {
-  const userData = await prisma.user.findFirstOrThrow({
+  const userData = await prisma.user.findUnique({
     where: {
       email: user.email,
       isActive: true,
@@ -102,7 +102,7 @@ const changedPassword = async (
   });
 
   if (!userData) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User Not Founded');
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
   }
 
   const isPassswordCorrect: boolean = await bcrypt.compare(
@@ -111,7 +111,7 @@ const changedPassword = async (
   );
 
   if (!isPassswordCorrect) {
-    throw new AppError(httpStatus.FORBIDDEN, 'Invalid Credentials');
+    throw new AppError(httpStatus.FORBIDDEN, 'Invalid Credentials!');
   }
 
   const hashedPassword: string = await bcrypt.hash(
@@ -119,7 +119,7 @@ const changedPassword = async (
     Number(config.bcrypt_salt_rounds)
   );
 
-  await prisma.user.update({
+  const updateData = await prisma.user.update({
     where: {
       email: userData.email,
     },
@@ -129,7 +129,7 @@ const changedPassword = async (
     },
   });
 
-  return null;
+  return updateData;
 };
 
 // forgetPassword
@@ -277,7 +277,7 @@ const resetPassword = async (
 export const authServices = {
   loginUserIntoDB,
   refreshToken,
-  changedPassword,
+  changePasswordIntoDB,
   forgetPassword,
   resetPassword,
 };

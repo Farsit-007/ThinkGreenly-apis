@@ -10,9 +10,9 @@ router.post('/login', authControllers.loginUser);
 router.post('/refresh-token', authControllers.refreshToken);
 
 router.patch(
-  '/changed-password',
+  '/change-password',
   auth(Role.ADMIN, Role.MEMBER),
-  authControllers.changedPassword
+  authControllers.changePassword
 );
 
 router.post('/forget-password', authControllers.forgetPassword);
