@@ -39,6 +39,8 @@ const draftAnIdea = z.object({
       .trim()
       .optional(),
 
+    images: z.array(z.string()).optional(),
+
     price: z
       .number({
         invalid_type_error: 'Price must be number!',
@@ -91,6 +93,8 @@ const createAnIdea = z.object({
         invalid_type_error: 'Description must be string!',
       })
       .trim(),
+
+    images: z.array(z.string()).optional(),
 
     price: z.number({
       required_error: 'Price is required!',

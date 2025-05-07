@@ -10,7 +10,6 @@ export class IdeaControllers {
   // draftAnIdea
   static draftAnIdea = catchAsync(async (req, res) => {
     const payload = req.body;
-    payload.images = [];
 
     if (req.files && req.files instanceof Array) {
       const imageUrls = await Promise.all(
@@ -23,13 +22,13 @@ export class IdeaControllers {
           return secure_url;
         })
       );
-      payload.images = imageUrls;
+      payload.images = [...payload.images, ...imageUrls];
     }
 
     const result = await IdeaServices.draftAnIdeaIntoDB(req.user, payload);
     sendResponse(res, {
       statusCode: httpStatus.OK,
-      message: 'Idea drafted successfully',
+      message: 'Idea drafted successfully!',
       data: result,
     });
   });
@@ -37,7 +36,6 @@ export class IdeaControllers {
   // createAnIdea
   static createAnIdea = catchAsync(async (req, res) => {
     const payload = req.body;
-    payload.images = [];
 
     if (req.files && req.files instanceof Array) {
       const imageUrls = await Promise.all(
@@ -50,13 +48,13 @@ export class IdeaControllers {
           return secure_url;
         })
       );
-      payload.images = imageUrls;
+      payload.images = [...payload.images, ...imageUrls];
     }
 
     const result = await IdeaServices.createAnIdeaIntoDB(req.user, payload);
     sendResponse(res, {
       statusCode: httpStatus.OK,
-      message: 'Idea posted successfully',
+      message: 'Idea posted successfully!',
       data: result,
     });
   });
@@ -69,7 +67,7 @@ export class IdeaControllers {
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
-      message: 'Ideas fetched successfully',
+      message: 'Ideas fetched successfully!',
       meta: result.meta,
       data: result.data,
     });
@@ -87,7 +85,7 @@ export class IdeaControllers {
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
-      message: 'Ideas fetched successfully',
+      message: 'Ideas fetched successfully!',
       meta: result.meta,
       data: result.data,
     });
@@ -98,7 +96,7 @@ export class IdeaControllers {
     const result = await IdeaServices.getSingleIdeaFromDB(req.params.id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
-      message: 'Idea fetched successfully',
+      message: 'Idea fetched successfully!',
       data: result,
     });
   });
@@ -132,7 +130,7 @@ export class IdeaControllers {
     const result = await IdeaServices.updateIdeaFromDB(req.params.id, payload);
     sendResponse(res, {
       statusCode: httpStatus.OK,
-      message: 'Idea updated successfully',
+      message: 'Idea updated successfully!',
       data: result,
     });
   });
