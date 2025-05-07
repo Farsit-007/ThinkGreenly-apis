@@ -34,7 +34,7 @@ const getCommentsByIdeaId = catchAsync(async (req, res) => {
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
-    message: 'comment list retrieved successfully',
+    message: 'Comment list retrieved successfully!',
     // meta: result?.meta,
     data: result,
   });
@@ -45,8 +45,7 @@ const deleteComments = catchAsync(async (req, res) => {
   const result = await commentService.deleteCommentFromDB(id, req.user);
   sendResponse(res, {
     statusCode: httpStatus.OK,
-    message: 'comment deleted successfully',
-    // meta: result?.meta,
+    message: 'Comment deleted successfully!',
     data: result,
   });
 });
