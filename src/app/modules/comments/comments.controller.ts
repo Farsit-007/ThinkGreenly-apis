@@ -8,7 +8,7 @@ const createComments = catchAsync(async (req, res) => {
   if (!req.user) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
-      'You must be logged in to comment.'
+      'You must be logged in to comment!'
     );
   }
 
@@ -16,7 +16,7 @@ const createComments = catchAsync(async (req, res) => {
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
-    message: 'comment is created successfully',
+    message: 'Comment added successfully!',
     data: result,
   });
 });
@@ -28,7 +28,7 @@ const getCommentsByIdeaId = catchAsync(async (req, res) => {
   if (!req.user) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
-      'You must be logged in to view comments.'
+      'You must be logged in to view comments!'
     );
   }
 
