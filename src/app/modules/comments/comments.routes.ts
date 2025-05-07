@@ -5,7 +5,11 @@ import { Role } from '@prisma/client';
 
 const CommentsRoutes = Router();
 
-CommentsRoutes.post('/', auth(Role.MEMBER), commentController.createComments);
+CommentsRoutes.post(
+  '/',
+  auth(Role.MEMBER, Role.ADMIN),
+  commentController.createComments
+);
 
 CommentsRoutes.get(
   '/:id',
