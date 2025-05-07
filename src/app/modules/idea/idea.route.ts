@@ -20,19 +20,15 @@ IdeaRoutes.post(
   IdeaControllers.draftAnIdea
 );
 
-
 IdeaRoutes.post(
   '/',
   uploadFile.array('images', 10),
-
   auth(Role.MEMBER, Role.ADMIN),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
-    
     next();
   },
-
-  // validateRequest(ideaValidationSchemas.createAnIdea),
+  validateRequest(ideaValidationSchemas.createAnIdea),
   IdeaControllers.createAnIdea
 );
 
@@ -52,7 +48,6 @@ IdeaRoutes.put(
   auth(Role.MEMBER, Role.ADMIN),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
-
     next();
   },
   validateRequest(ideaValidationSchemas.createAnIdea),

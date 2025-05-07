@@ -41,9 +41,9 @@ model Idea {
   problemStatement String?
   solution         String?
   description      String?
-  images           String[] // Use array of image URLs
+  images           String[] // Array of image URLs
   isPaid           Boolean    @default(false)
-  price            Float? // Only needed if isPaid = true
+  price            Float? // while isPaid = true
   status           IdeaStatus @default(DRAFT)
   feedback         String? // Rejection reason
   categoryId       String?
@@ -74,17 +74,18 @@ model Vote {
 }
 
 model Comment {
-  id        String    @id @default(uuid())
-  content   String
-  ideaId    String
-  userId    String
-  parentId  String? // For nested replies
-  idea      Idea      @relation(fields: [ideaId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
-  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  replies   Comment[] @relation("CommentReplies")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id       String    @id @default(uuid())
+  content  String
+  ideaId   String
+  userId   String
+  parentId String? // For nested replies
+  idea     Idea      @relation(fields: [ideaId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("comments")
 }
