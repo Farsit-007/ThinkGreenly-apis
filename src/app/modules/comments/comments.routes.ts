@@ -15,7 +15,7 @@ CommentsRoutes.get(
 
 CommentsRoutes.delete(
   '/:id',
-  auth(Role.ADMIN),
+  auth(Role.ADMIN, Role.MEMBER),
   commentController.deleteComments
 );
 

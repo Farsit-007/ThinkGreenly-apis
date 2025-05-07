@@ -73,7 +73,7 @@ const deleteCommentFromDB = async (id: string, authUser: JwtPayload) => {
     if (comment.userId !== userId) {
       throw new AppError(
         httpStatus.NOT_ACCEPTABLE,
-        "Not premited to delete other's comments!"
+        "Not premited to delete other's comment!"
       );
     }
   }
