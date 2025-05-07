@@ -5,10 +5,18 @@ import { Role } from '@prisma/client';
 
 const CommentsRoutes = Router();
 
-CommentsRoutes.post('/',auth(Role.MEMBER), commentController.createComments);
+CommentsRoutes.post('/', auth(Role.MEMBER), commentController.createComments);
 
-CommentsRoutes.get('/:id',auth(Role.MEMBER,Role.ADMIN), commentController.getCommentsByIdeaId);
+CommentsRoutes.get(
+  '/:id',
+  auth(Role.MEMBER, Role.ADMIN),
+  commentController.getCommentsByIdeaId
+);
 
-CommentsRoutes.delete('/:id',auth( Role.ADMIN), commentController.deleteComments);
+CommentsRoutes.delete(
+  '/:id',
+  auth(Role.ADMIN),
+  commentController.deleteComments
+);
 
 export default CommentsRoutes;

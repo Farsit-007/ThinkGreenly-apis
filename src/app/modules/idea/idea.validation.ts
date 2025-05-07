@@ -3,6 +3,12 @@ import { z } from 'zod';
 // draftAnIdea
 const draftAnIdea = z.object({
   body: z.object({
+    id: z
+      .string({
+        required_error: 'Title is required!',
+        invalid_type_error: 'Title must be string!',
+      })
+      .optional(),
     title: z
       .string({
         required_error: 'Title is required!',
@@ -50,6 +56,12 @@ const draftAnIdea = z.object({
 // createAnIdea
 const createAnIdea = z.object({
   body: z.object({
+    id: z
+      .string({
+        required_error: 'Title is required!',
+        invalid_type_error: 'Title must be string!',
+      })
+      .optional(),
     title: z
       .string({
         required_error: 'Title is required!',

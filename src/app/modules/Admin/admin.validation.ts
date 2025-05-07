@@ -7,17 +7,21 @@ const userStatusValidation = z.object({
     }),
   }),
 });
+
 const ideaStatusValidation = z.object({
   body: z.object({
     status: z.enum(['UNDER_REVIEW', 'APPROVED', 'REJECTED'], {
       required_error: 'status is required!',
     }),
-    feedback:z.string({
-      required_error: 'feedback is required!',  
-    }).optional(),
+    feedback: z
+      .string({
+        required_error: 'feedback is required!',
+      })
+      .optional(),
   }),
 });
+
 export const adminValidationSchemas = {
   userStatusValidation,
-  ideaStatusValidation
+  ideaStatusValidation,
 };

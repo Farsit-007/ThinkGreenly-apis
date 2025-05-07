@@ -12,6 +12,17 @@ router.get('/users', AdminController.getAllUsers);
 router.get('/ideas', AdminController.getAllIdeas);
 
 router.patch('/ideas/:id/status', AdminController.updateIdeaStatus);
-router.patch('/user/:id/status',validateRequest(adminValidationSchemas.userStatusValidation), AdminController.updateUserActiveStatus);
-router.delete('/ideas/:id',auth(Role.ADMIN), AdminController.deleteAnIdeaFromDB);
+
+router.patch(
+  '/user/:id/status',
+  validateRequest(adminValidationSchemas.userStatusValidation),
+  AdminController.updateUserActiveStatus
+);
+
+router.delete(
+  '/ideas/:id',
+  auth(Role.ADMIN),
+  AdminController.deleteAnIdeaFromDB
+);
+
 export const adminRoutes = router;
