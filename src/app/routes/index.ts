@@ -7,6 +7,7 @@ import { userRoutes } from '../modules/Users/user.route';
 import { authRoutes } from '../modules/Auth/auth.route';
 import { paymentRoutes } from '../modules/Payment/payment.routes';
 import { voteRoutes } from '../modules/vote/vote.routes';
+import { MetaRoutes } from '../modules/Meta/meta.routes';
 
 const router = Router();
 
@@ -42,6 +43,10 @@ const moduleRoutes = [
   {
     path: '/votes',
     route: voteRoutes,
+  },
+  {
+    path: '/meta',
+    route: MetaRoutes,
   },
 ];
 

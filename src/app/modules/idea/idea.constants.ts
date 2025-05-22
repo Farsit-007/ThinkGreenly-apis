@@ -7,6 +7,7 @@ export const ideaFilterOptions = [
 ];
 
 export const ideaSearchableFields = [
+  'id',
   'title',
   'problemStatement',
   'solution',
