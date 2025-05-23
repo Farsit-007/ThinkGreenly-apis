@@ -11,6 +11,7 @@ export const ideaSearchableFields = [
   'title',
   'problemStatement',
   'solution',
+  'category',
   'description',
   // 'isPaid',
   // 'price',
