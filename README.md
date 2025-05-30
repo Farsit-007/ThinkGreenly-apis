@@ -166,11 +166,11 @@ RESTful API for the ThinkGreenly, built with Node.js, Express, and PostgreSQL. H
 ### Vote APIs
 
 ```
-✅️ POST  /api/v1/votes                   Register Vote (Upvote/Downvote)
-✅️ DELETE  /api/v1/votes/:id             Remove Vote
-✅️ GET   /api/v1/votes/me                Get Current User’s Vote for an Idea
-✅️ GET   /api/v1/ideas/sorted-by-votes   Get All Ideas Sorted by Votes
-✅️ GET   /api/v1/votes/stats            Get Upvote/Downvote Stats
+✅️ POST  /api/v1/votes             Register Vote (Upvote/Downvote)
+✅️ DELETE  /api/v1/votes/:id          Remove Vote
+✅️ GET   /api/v1/votes/me           Get Current User’s Vote for an Idea
+✅️ GET   /api/v1/ideas/sorted-by-votes   	Get All Ideas Sorted by Votes
+✅️ GET   /api/v1/votes/stats          Get Upvote/Downvote Stats
 ```
 
 ## 👥 Contributors
