@@ -70,7 +70,13 @@ const getAllCategoriesFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
+const deleteCategory = async (id: string) => {
+  const result = await prisma.category.delete({ where: { id } });
+  return result;
+}
+
 export const CategoryService = {
   createCategoryIntoDB,
   getAllCategoriesFromDB,
+  deleteCategory
 };

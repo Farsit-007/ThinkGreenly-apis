@@ -5,8 +5,16 @@ import { Role } from '@prisma/client';
 
 const CategoryRoutes = Router();
 
-CategoryRoutes.post('/', auth(Role.ADMIN), CategoryController.createCategory);
+CategoryRoutes.post('/',
+    auth(Role.ADMIN),
+    CategoryController.createCategory);
 
 CategoryRoutes.get('/', CategoryController.getAllCategories);
+
+CategoryRoutes.delete(
+  '/:id',
+  auth(Role.ADMIN),
+  CategoryController.deleteCategory
+);
 
 export default CategoryRoutes;
