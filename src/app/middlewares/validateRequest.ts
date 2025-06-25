@@ -10,7 +10,8 @@ const validateRequest = (schema: AnyZodObject) => {
         query: req.query,
       });
       req.body = validateBody.body;
-      return next();
+
+      next();
     } catch (err) {
       next(err);
     }
